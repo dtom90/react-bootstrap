@@ -6,17 +6,13 @@ import Media from '../src/Media';
 
 describe('Media.Left', () => {
   it('uses "div"', () => {
-    const instance = ReactTestUtils.renderIntoDocument(
-      <Media.Left />
-    );
+    const instance = ReactTestUtils.renderIntoDocument(<Media.Left />);
 
     assert.equal(ReactDOM.findDOMNode(instance).nodeName, 'DIV');
   });
 
   it('has "media-left" class', () => {
-    const instance = ReactTestUtils.renderIntoDocument(
-      <Media.Left />
-    );
+    const instance = ReactTestUtils.renderIntoDocument(<Media.Left />);
 
     assert.ok(ReactDOM.findDOMNode(instance).className.match(/\bmedia-left\b/));
   });
@@ -26,7 +22,9 @@ describe('Media.Left', () => {
       <Media.Left align="middle" />
     );
 
-    assert.ok(ReactDOM.findDOMNode(instance).className.match(/\bmedia-middle\b/));
+    assert.ok(
+      ReactDOM.findDOMNode(instance).className.match(/\bmedia-middle\b/)
+    );
   });
 
   it('should be able to change alignment to bottom', () => {
@@ -34,7 +32,9 @@ describe('Media.Left', () => {
       <Media.Left align="bottom" />
     );
 
-    assert.ok(ReactDOM.findDOMNode(instance).className.match(/\bmedia-bottom\b/));
+    assert.ok(
+      ReactDOM.findDOMNode(instance).className.match(/\bmedia-bottom\b/)
+    );
   });
 
   it('should merge additional classes passed in', () => {

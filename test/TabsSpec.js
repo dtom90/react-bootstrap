@@ -15,12 +15,19 @@ describe('<Tabs>', () => {
   it('Should show the correct tab', () => {
     const instance = ReactTestUtils.renderIntoDocument(
       <Tabs id="test" defaultActiveKey={1}>
-        <Tab title="Tab 1" eventKey={1}>Tab 1 content</Tab>
-        <Tab title="Tab 2" eventKey={2}>Tab 2 content</Tab>
+        <Tab title="Tab 1" eventKey={1}>
+          Tab 1 content
+        </Tab>
+        <Tab title="Tab 2" eventKey={2}>
+          Tab 2 content
+        </Tab>
       </Tabs>
     );
 
-    const panes = ReactTestUtils.scryRenderedComponentsWithType(instance, TabPane);
+    const panes = ReactTestUtils.scryRenderedComponentsWithType(
+      instance,
+      TabPane
+    );
 
     assert.ok(ReactDOM.findDOMNode(panes[0]).className.match(/\bactive\b/));
     assert.ok(!ReactDOM.findDOMNode(panes[1]).className.match(/\bactive\b/));
@@ -32,9 +39,13 @@ describe('<Tabs>', () => {
   it('Should only show the tabs with `Tab.props.title` set', () => {
     const instance = ReactTestUtils.renderIntoDocument(
       <Tabs id="test" defaultActiveKey={3}>
-        <Tab title="Tab 1" eventKey={1}>Tab 1 content</Tab>
+        <Tab title="Tab 1" eventKey={1}>
+          Tab 1 content
+        </Tab>
         <Tab eventKey={2}>Tab 2 content</Tab>
-        <Tab title="Tab 2" eventKey={3}>Tab 3 content</Tab>
+        <Tab title="Tab 2" eventKey={3}>
+          Tab 3 content
+        </Tab>
       </Tabs>
     );
 
@@ -43,21 +54,25 @@ describe('<Tabs>', () => {
   });
 
   it('Should allow tab to have React components', () => {
-    const tabTitle = (
-      <strong className="special-tab">Tab 2</strong>
-    );
+    const tabTitle = <strong className="special-tab">Tab 2</strong>;
     const instance = ReactTestUtils.renderIntoDocument(
       <Tabs id="test" defaultActiveKey={2}>
-        <Tab title="Tab 1" eventKey={1}>Tab 1 content</Tab>
-        <Tab title={tabTitle} eventKey={2}>Tab 2 content</Tab>
+        <Tab title="Tab 1" eventKey={1}>
+          Tab 1 content
+        </Tab>
+        <Tab title={tabTitle} eventKey={2}>
+          Tab 2 content
+        </Tab>
       </Tabs>
     );
 
     const nav = ReactTestUtils.findRenderedComponentWithType(instance, Nav);
-    assert.ok(ReactTestUtils.findRenderedDOMComponentWithClass(nav, 'special-tab'));
+    assert.ok(
+      ReactTestUtils.findRenderedDOMComponentWithClass(nav, 'special-tab')
+    );
   });
 
-  it('Should call onSelect when tab is selected', (done) => {
+  it('Should call onSelect when tab is selected', done => {
     function onSelect(key) {
       assert.equal(key, '2');
       done();
@@ -66,8 +81,12 @@ describe('<Tabs>', () => {
     const tab2 = <span className="tab2">Tab2</span>;
     const instance = ReactTestUtils.renderIntoDocument(
       <Tabs id="test" onSelect={onSelect} activeKey={1}>
-        <Tab title="Tab 1" eventKey="1">Tab 1 content</Tab>
-        <Tab title={tab2} eventKey="2">Tab 2 content</Tab>
+        <Tab title="Tab 1" eventKey="1">
+          Tab 1 content
+        </Tab>
+        <Tab title={tab2} eventKey="2">
+          Tab 2 content
+        </Tab>
       </Tabs>
     );
 
@@ -79,13 +98,20 @@ describe('<Tabs>', () => {
   it('Should have children with the correct DOM properties', () => {
     const instance = ReactTestUtils.renderIntoDocument(
       <Tabs id="test" defaultActiveKey={1}>
-        <Tab title="Tab 1" className="custom" eventKey={1}>Tab 1 content</Tab>
-        <Tab title="Tab 2" tabClassName="tcustom" eventKey={2}>Tab 2 content</Tab>
+        <Tab title="Tab 1" className="custom" eventKey={1}>
+          Tab 1 content
+        </Tab>
+        <Tab title="Tab 2" tabClassName="tcustom" eventKey={2}>
+          Tab 2 content
+        </Tab>
       </Tabs>
     );
 
     const panes = ReactTestUtils.scryRenderedComponentsWithType(instance, Tab);
-    const navs = ReactTestUtils.scryRenderedComponentsWithType(instance, NavItem);
+    const navs = ReactTestUtils.scryRenderedComponentsWithType(
+      instance,
+      NavItem
+    );
 
     assert.ok(ReactDOM.findDOMNode(panes[0]).className.match(/\bcustom\b/));
     assert.ok(ReactDOM.findDOMNode(navs[1]).className.match(/\btcustom\b/));
@@ -95,12 +121,19 @@ describe('<Tabs>', () => {
   it('Should show the correct first tab with no active key value', () => {
     const instance = ReactTestUtils.renderIntoDocument(
       <Tabs id="test">
-        <Tab title="Tab 1" eventKey={1}>Tab 1 content</Tab>
-        <Tab title="Tab 2" eventKey={2}>Tab 2 content</Tab>
+        <Tab title="Tab 1" eventKey={1}>
+          Tab 1 content
+        </Tab>
+        <Tab title="Tab 2" eventKey={2}>
+          Tab 2 content
+        </Tab>
       </Tabs>
     );
 
-    const panes = ReactTestUtils.scryRenderedComponentsWithType(instance, TabPane);
+    const panes = ReactTestUtils.scryRenderedComponentsWithType(
+      instance,
+      TabPane
+    );
     assert.ok(ReactDOM.findDOMNode(panes[0]).className.match(/\bactive\b/));
     assert.ok(!ReactDOM.findDOMNode(panes[1]).className.match(/\bactive\b/));
 
@@ -110,14 +143,8 @@ describe('<Tabs>', () => {
 
   it('Should show the correct first tab with children array', () => {
     const panes = [0, 1].map(index => (
-      <Tab
-        key={index}
-        eventKey={index}
-        title={`Tab #${index}`}
-      >
-        <div>
-          content
-        </div>
+      <Tab key={index} eventKey={index} title={`Tab #${index}`}>
+        <div>content</div>
       </Tab>
     ));
 
@@ -136,12 +163,19 @@ describe('<Tabs>', () => {
     const tab1 = <span className="tab1">Tab 1</span>;
     const instance = ReactTestUtils.renderIntoDocument(
       <Tabs id="test" defaultActiveKey={2} animation={false}>
-        <Tab title={tab1} eventKey={1}>Tab 1 content</Tab>
-        <Tab title="Tab 2" eventKey={2}>Tab 2 content</Tab>
+        <Tab title={tab1} eventKey={1}>
+          Tab 1 content
+        </Tab>
+        <Tab title="Tab 2" eventKey={2}>
+          Tab 2 content
+        </Tab>
       </Tabs>
     );
 
-    const panes = ReactTestUtils.scryRenderedComponentsWithType(instance, TabPane);
+    const panes = ReactTestUtils.scryRenderedComponentsWithType(
+      instance,
+      TabPane
+    );
 
     ReactTestUtils.Simulate.click(
       ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'tab1')
@@ -158,13 +192,22 @@ describe('<Tabs>', () => {
     const tab1 = <span className="tab1">Tab 1</span>;
     const instance = ReactTestUtils.renderIntoDocument(
       <Tabs id="test" defaultActiveKey={1} animation={false} unmountOnExit>
-        <Tab title={tab1} eventKey={1}>Tab 1 content</Tab>
-        <Tab title="Tab 2" eventKey={2}>Tab 2 content</Tab>
-        <Tab title="Tab 3" eventKey={3}>Tab 3 content</Tab>
+        <Tab title={tab1} eventKey={1}>
+          Tab 1 content
+        </Tab>
+        <Tab title="Tab 2" eventKey={2}>
+          Tab 2 content
+        </Tab>
+        <Tab title="Tab 3" eventKey={3}>
+          Tab 3 content
+        </Tab>
       </Tabs>
     );
 
-    const panes = ReactTestUtils.scryRenderedComponentsWithType(instance, TabPane);
+    const panes = ReactTestUtils.scryRenderedComponentsWithType(
+      instance,
+      TabPane
+    );
     expect(ReactDOM.findDOMNode(panes[0])).to.exist;
     expect(ReactDOM.findDOMNode(panes[1])).to.not.exist;
     expect(ReactDOM.findDOMNode(panes[2])).to.not.exist;
@@ -174,12 +217,19 @@ describe('<Tabs>', () => {
     const tab1 = <span className="tab1">Tab 1</span>;
     const instance = ReactTestUtils.renderIntoDocument(
       <Tabs id="test" defaultActiveKey={2} animation={false} unmountOnExit>
-        <Tab title={tab1} eventKey={1}>Tab 1 content</Tab>
-        <Tab title="Tab 2" eventKey={2}>Tab 2 content</Tab>
+        <Tab title={tab1} eventKey={1}>
+          Tab 1 content
+        </Tab>
+        <Tab title="Tab 2" eventKey={2}>
+          Tab 2 content
+        </Tab>
       </Tabs>
     );
 
-    const panes = ReactTestUtils.scryRenderedComponentsWithType(instance, TabPane);
+    const panes = ReactTestUtils.scryRenderedComponentsWithType(
+      instance,
+      TabPane
+    );
 
     ReactTestUtils.Simulate.click(
       ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'tab1')
@@ -194,9 +244,13 @@ describe('<Tabs>', () => {
 
   it('Should treat active key of null as nothing selected', () => {
     const instance = ReactTestUtils.renderIntoDocument(
-      <Tabs id="test" activeKey={null} onSelect={()=>{}}>
-        <Tab title="Tab 1" eventKey={1}>Tab 1 content</Tab>
-        <Tab title="Tab 2" eventKey={2}>Tab 2 content</Tab>
+      <Tabs id="test" activeKey={null} onSelect={() => {}}>
+        <Tab title="Tab 1" eventKey={1}>
+          Tab 1 content
+        </Tab>
+        <Tab title="Tab 2" eventKey={2}>
+          Tab 2 content
+        </Tab>
       </Tabs>
     );
 
@@ -207,46 +261,71 @@ describe('<Tabs>', () => {
   it('Should pass default bsStyle (of "tabs") to Nav', () => {
     const instance = ReactTestUtils.renderIntoDocument(
       <Tabs id="test" defaultActiveKey={1} animation={false}>
-        <Tab title="Tab 1" eventKey={1}>Tab 1 content</Tab>
-        <Tab title="Tab 2" eventKey={2}>Tab 2 content</Tab>
+        <Tab title="Tab 1" eventKey={1}>
+          Tab 1 content
+        </Tab>
+        <Tab title="Tab 2" eventKey={2}>
+          Tab 2 content
+        </Tab>
       </Tabs>
     );
 
-    assert.ok(ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'nav-tabs'));
+    assert.ok(
+      ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'nav-tabs')
+    );
   });
 
   it('Should pass bsStyle to Nav', () => {
     const instance = ReactTestUtils.renderIntoDocument(
       <Tabs id="test" bsStyle="pills" defaultActiveKey={1} animation={false}>
-        <Tab title="Tab 1" eventKey={1}>Tab 1 content</Tab>
-        <Tab title="Tab 2" eventKey={2}>Tab 2 content</Tab>
+        <Tab title="Tab 1" eventKey={1}>
+          Tab 1 content
+        </Tab>
+        <Tab title="Tab 2" eventKey={2}>
+          Tab 2 content
+        </Tab>
       </Tabs>
     );
 
-    assert.ok(ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'nav-pills'));
+    assert.ok(
+      ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'nav-pills')
+    );
   });
 
   it('Should pass disabled to Nav', () => {
     const instance = ReactTestUtils.renderIntoDocument(
       <Tabs id="test" defaultActiveKey={1}>
-        <Tab title="Tab 1" eventKey={1}>Tab 1 content</Tab>
-        <Tab title="Tab 2" eventKey={2} disabled>Tab 2 content</Tab>
+        <Tab title="Tab 1" eventKey={1}>
+          Tab 1 content
+        </Tab>
+        <Tab title="Tab 2" eventKey={2} disabled>
+          Tab 2 content
+        </Tab>
       </Tabs>
     );
 
-    assert.ok(ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'disabled'));
+    assert.ok(
+      ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'disabled')
+    );
   });
 
   it('Should not show content when clicking disabled tab', () => {
     const tab1 = <span className="tab1">Tab 1</span>;
     const instance = ReactTestUtils.renderIntoDocument(
       <Tabs id="test" defaultActiveKey={2} animation={false}>
-        <Tab title={tab1} eventKey={1} disabled>Tab 1 content</Tab>
-        <Tab title="Tab 2" eventKey={2}>Tab 2 content</Tab>
+        <Tab title={tab1} eventKey={1} disabled>
+          Tab 1 content
+        </Tab>
+        <Tab title="Tab 2" eventKey={2}>
+          Tab 2 content
+        </Tab>
       </Tabs>
     );
 
-    const panes = ReactTestUtils.scryRenderedComponentsWithType(instance, TabPane);
+    const panes = ReactTestUtils.scryRenderedComponentsWithType(
+      instance,
+      TabPane
+    );
 
     ReactTestUtils.Simulate.click(
       ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'tab1')
@@ -258,7 +337,6 @@ describe('<Tabs>', () => {
     const nav = ReactTestUtils.findRenderedComponentWithType(instance, Nav);
     assert.equal(nav.context.$bs_tabContainer.activeKey, 2);
   });
-
 
   describe('active state invariants', () => {
     let mountPoint;
@@ -282,14 +360,24 @@ describe('<Tabs>', () => {
             animation={animation}
             onSelect={() => {}}
           >
-            <Tab title="Tab 1" eventKey={1}>Tab 1 content</Tab>
-            <Tab title="Tab 2" eventKey={2}>Tab 2 content</Tab>
-          </Tabs>
-        , mountPoint);
+            <Tab title="Tab 1" eventKey={1}>
+              Tab 1 content
+            </Tab>
+            <Tab title="Tab 2" eventKey={2}>
+              Tab 2 content
+            </Tab>
+          </Tabs>,
+          mountPoint
+        );
 
-        const panes = ReactTestUtils.scryRenderedComponentsWithType(instance, TabPane);
+        const panes = ReactTestUtils.scryRenderedComponentsWithType(
+          instance,
+          TabPane
+        );
 
-        assert.ok(!ReactDOM.findDOMNode(panes[0]).className.match(/\bactive\b/));
+        assert.ok(
+          !ReactDOM.findDOMNode(panes[0]).className.match(/\bactive\b/)
+        );
         assert.ok(ReactDOM.findDOMNode(panes[1]).className.match(/\bactive\b/));
 
         // second tab has been removed
@@ -300,15 +388,17 @@ describe('<Tabs>', () => {
             animation={animation}
             onSelect={() => {}}
           >
-            <Tab title="Tab 1" eventKey={1}>Tab 1 content</Tab>
-          </Tabs>
-        , mountPoint).refs.inner;
+            <Tab title="Tab 1" eventKey={1}>
+              Tab 1 content
+            </Tab>
+          </Tabs>,
+          mountPoint
+        ).inner;
 
         assert.ok(ReactDOM.findDOMNode(panes[0]).className.match(/\bactive\b/));
       });
     });
   });
-
 
   describe('Web Accessibility', () => {
     let instance;
@@ -316,28 +406,40 @@ describe('<Tabs>', () => {
     beforeEach(() => {
       instance = ReactTestUtils.renderIntoDocument(
         <Tabs defaultActiveKey={2} id="test">
-          <Tab title="Tab 1" eventKey={1}>Tab 1 content</Tab>
-          <Tab title="Tab 2" eventKey={2}>Tab 2 content</Tab>
+          <Tab title="Tab 1" eventKey={1}>
+            Tab 1 content
+          </Tab>
+          <Tab title="Tab 2" eventKey={2}>
+            Tab 2 content
+          </Tab>
         </Tabs>
       );
     });
 
     it('Should generate ids from parent id', () => {
-      const tabs = ReactTestUtils.scryRenderedComponentsWithType(instance, NavItem);
+      const tabs = ReactTestUtils.scryRenderedComponentsWithType(
+        instance,
+        NavItem
+      );
 
-      tabs.every(tab =>
-        assert.ok(tab.props['aria-controls'] && tab.props.id));
+      tabs.every(tab => assert.ok(tab.props['aria-controls'] && tab.props.id));
     });
 
     it('Should add aria-labelledby', () => {
-      const panes = ReactTestUtils.scryRenderedDOMComponentsWithClass(instance, 'tab-pane');
+      const panes = ReactTestUtils.scryRenderedDOMComponentsWithClass(
+        instance,
+        'tab-pane'
+      );
 
       assert.equal(panes[0].getAttribute('aria-labelledby'), 'test-tab-1');
       assert.equal(panes[1].getAttribute('aria-labelledby'), 'test-tab-2');
     });
 
     it('Should add aria-controls', () => {
-      const tabs = ReactTestUtils.scryRenderedComponentsWithType(instance, NavItem);
+      const tabs = ReactTestUtils.scryRenderedComponentsWithType(
+        instance,
+        NavItem
+      );
 
       assert.equal(tabs[0].props['aria-controls'], 'test-pane-1');
       assert.equal(tabs[1].props['aria-controls'], 'test-pane-2');
@@ -350,9 +452,18 @@ describe('<Tabs>', () => {
     });
 
     it('Should add aria-selected to the nav item for the selected tab', () => {
-      const tabs = ReactTestUtils.scryRenderedComponentsWithType(instance, NavItem);
-      const link1 = ReactTestUtils.findRenderedDOMComponentWithTag(tabs[0], 'a');
-      const link2 = ReactTestUtils.findRenderedDOMComponentWithTag(tabs[1], 'a');
+      const tabs = ReactTestUtils.scryRenderedComponentsWithType(
+        instance,
+        NavItem
+      );
+      const link1 = ReactTestUtils.findRenderedDOMComponentWithTag(
+        tabs[0],
+        'a'
+      );
+      const link2 = ReactTestUtils.findRenderedDOMComponentWithTag(
+        tabs[1],
+        'a'
+      );
 
       assert.equal(link1.getAttribute('aria-selected'), 'false');
       assert.equal(link2.getAttribute('aria-selected'), 'true');
@@ -362,13 +473,23 @@ describe('<Tabs>', () => {
   it('Should not pass className to Nav', () => {
     const instance = ReactTestUtils.renderIntoDocument(
       <Tabs id="test" bsStyle="pills" defaultActiveKey={1} animation={false}>
-        <Tab title="Tab 1" eventKey={1} className="my-tab-class">Tab 1 content</Tab>
-        <Tab title="Tab 2" eventKey={2}>Tab 2 content</Tab>
+        <Tab title="Tab 1" eventKey={1} className="my-tab-class">
+          Tab 1 content
+        </Tab>
+        <Tab title="Tab 2" eventKey={2}>
+          Tab 2 content
+        </Tab>
       </Tabs>
     );
 
-    const myTabClass = ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'my-tab-class');
-    const myNavItem = ReactTestUtils.scryRenderedDOMComponentsWithClass(instance, 'nav-pills')[0];
+    const myTabClass = ReactTestUtils.findRenderedDOMComponentWithClass(
+      instance,
+      'my-tab-class'
+    );
+    const myNavItem = ReactTestUtils.scryRenderedDOMComponentsWithClass(
+      instance,
+      'nav-pills'
+    )[0];
 
     assert.notDeepEqual(myTabClass, myNavItem);
   });
@@ -385,8 +506,14 @@ describe('<Tabs>', () => {
       />
     );
 
-    assert.equal(ReactDOM.findDOMNode(instance).getAttribute('class'), 'my-tabs-class');
-    assert.equal(ReactDOM.findDOMNode(instance).getAttribute('id'), 'my-tabs-id');
+    assert.equal(
+      ReactDOM.findDOMNode(instance).getAttribute('class'),
+      'my-tabs-class'
+    );
+    assert.equal(
+      ReactDOM.findDOMNode(instance).getAttribute('id'),
+      'my-tabs-id'
+    );
     // Decimal point string depends on locale
     assert.equal(parseFloat(ReactDOM.findDOMNode(instance).style.opacity), 0.5);
   });
@@ -399,7 +526,16 @@ describe('<Tabs>', () => {
       </Tabs>
     );
 
-    assert.lengthOf(ReactTestUtils.scryRenderedDOMComponentsWithClass(instance, 'my-tabs-pane'), 2);
-    assert.lengthOf(ReactTestUtils.scryRenderedDOMComponentsWithClass(instance, 'my-pane'), 0);
+    assert.lengthOf(
+      ReactTestUtils.scryRenderedDOMComponentsWithClass(
+        instance,
+        'my-tabs-pane'
+      ),
+      2
+    );
+    assert.lengthOf(
+      ReactTestUtils.scryRenderedDOMComponentsWithClass(instance, 'my-pane'),
+      0
+    );
   });
 });

@@ -5,15 +5,13 @@ import ReactTestUtils from 'react-dom/test-utils';
 import ButtonGroup from '../src/ButtonGroup';
 import Button from '../src/Button';
 
-import {shouldWarn} from './helpers';
+import { shouldWarn } from './helpers';
 
 describe('ButtonGroup', () => {
   it('Should output a button group', () => {
     let instance = ReactTestUtils.renderIntoDocument(
       <ButtonGroup>
-        <Button>
-          Title
-        </Button>
+        <Button>Title</Button>
       </ButtonGroup>
     );
     assert.equal(ReactDOM.findDOMNode(instance).nodeName, 'DIV');
@@ -23,31 +21,30 @@ describe('ButtonGroup', () => {
   it('Should add size', () => {
     let instance = ReactTestUtils.renderIntoDocument(
       <ButtonGroup bsSize="large">
-        <Button>
-          Title
-        </Button>
+        <Button>Title</Button>
       </ButtonGroup>
     );
-    assert.ok(ReactDOM.findDOMNode(instance).className.match(/\bbtn-group-lg\b/));
+    assert.ok(
+      ReactDOM.findDOMNode(instance).className.match(/\bbtn-group-lg\b/)
+    );
   });
 
   it('Should add vertical variation', () => {
     let instance = ReactTestUtils.renderIntoDocument(
       <ButtonGroup vertical>
-        <Button>
-          Title
-        </Button>
+        <Button>Title</Button>
       </ButtonGroup>
     );
-    assert.equal(ReactDOM.findDOMNode(instance).className.trim(), 'btn-group-vertical');
+    assert.equal(
+      ReactDOM.findDOMNode(instance).className.trim(),
+      'btn-group-vertical'
+    );
   });
 
   it('Should add block variation', () => {
     let instance = ReactTestUtils.renderIntoDocument(
       <ButtonGroup vertical block>
-        <Button>
-          Title
-        </Button>
+        <Button>Title</Button>
       </ButtonGroup>
     );
     assert.ok(ReactDOM.findDOMNode(instance).className.match(/\bbtn-block\b/));
@@ -58,9 +55,7 @@ describe('ButtonGroup', () => {
 
     ReactTestUtils.renderIntoDocument(
       <ButtonGroup block>
-        <Button>
-          Title
-        </Button>
+        <Button>Title</Button>
       </ButtonGroup>
     );
   });
@@ -68,11 +63,11 @@ describe('ButtonGroup', () => {
   it('Should add justified variation', () => {
     let instance = ReactTestUtils.renderIntoDocument(
       <ButtonGroup justified>
-        <Button>
-          Title
-        </Button>
+        <Button>Title</Button>
       </ButtonGroup>
     );
-    assert.ok(ReactDOM.findDOMNode(instance).className.match(/\bbtn-group-justified\b/));
+    assert.ok(
+      ReactDOM.findDOMNode(instance).className.match(/\bbtn-group-justified\b/)
+    );
   });
 });

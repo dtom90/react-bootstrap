@@ -13,14 +13,14 @@ describe('<Jumbotron>', () => {
     );
 
     assert.equal(ReactDOM.findDOMNode(instance).nodeName, 'DIV');
-    assert.ok(ReactTestUtils.findRenderedDOMComponentWithTag(instance, 'strong'));
+    assert.ok(
+      ReactTestUtils.findRenderedDOMComponentWithTag(instance, 'strong')
+    );
   });
 
   it('Should have a jumbotron class', () => {
     let instance = ReactTestUtils.renderIntoDocument(
-      <Jumbotron>
-        Content
-      </Jumbotron>
+      <Jumbotron>Content</Jumbotron>
     );
     assert.ok(ReactDOM.findDOMNode(instance).className.match(/\bjumbotron\b/));
   });

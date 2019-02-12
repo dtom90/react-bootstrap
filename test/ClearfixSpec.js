@@ -6,9 +6,7 @@ import Clearfix from '../src/Clearfix';
 
 describe('<Clearfix>', () => {
   it('uses "div" by default', () => {
-    let instance = ReactTestUtils.renderIntoDocument(
-      <Clearfix />
-    );
+    let instance = ReactTestUtils.renderIntoDocument(<Clearfix />);
 
     assert.equal(ReactDOM.findDOMNode(instance).nodeName, 'DIV');
   });
@@ -21,9 +19,7 @@ describe('<Clearfix>', () => {
   });
 
   it('Defaults to no visible block classes', () => {
-    let instance = ReactTestUtils.renderIntoDocument(
-      <Clearfix />
-    );
+    let instance = ReactTestUtils.renderIntoDocument(<Clearfix />);
 
     let instanceClassName = ReactDOM.findDOMNode(instance).className;
     assert.ok(!instanceClassName.match(/\bvisible-xs-block\b/));
@@ -46,7 +42,7 @@ describe('<Clearfix>', () => {
 
   it('Should merge additional classes passed in', () => {
     let instance = ReactTestUtils.renderIntoDocument(
-      <Clearfix className="bob"/>
+      <Clearfix className="bob" />
     );
     assert.ok(ReactDOM.findDOMNode(instance).className.match(/\bbob\b/));
     assert.ok(ReactDOM.findDOMNode(instance).className.match(/\bclearfix\b/));

@@ -3,20 +3,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import elementType from 'prop-types-extra/lib/elementType';
 
-import { bsClass as setBsClass, prefix, splitBsPropsAndOmit }
-  from './utils/bootstrapUtils';
+import {
+  bsClass as setBsClass,
+  prefix,
+  splitBsPropsAndOmit
+} from './utils/bootstrapUtils';
 
 const propTypes = {
   componentClass: elementType,
 
   /**
    * Sets a default animation strategy for all children `<TabPane>`s. Use
-   * `false` to disable, `true` to enable the default `<Fade>` animation or any
-   * `<Transition>` component.
+   * `false` to disable, `true` to enable the default `<Fade>` animation or
+   * a react-transition-group v2 `<Transition/>` component.
    */
-  animation: PropTypes.oneOfType([
-    PropTypes.bool, elementType,
-  ]),
+  animation: PropTypes.oneOfType([PropTypes.bool, elementType]),
 
   /**
    * Wait until the first "enter" transition to mount tabs (add them to the DOM)
@@ -26,35 +27,33 @@ const propTypes = {
   /**
    * Unmount tabs (remove it from the DOM) when they are no longer visible
    */
-  unmountOnExit: PropTypes.bool,
+  unmountOnExit: PropTypes.bool
 };
 
 const defaultProps = {
   componentClass: 'div',
   animation: true,
   mountOnEnter: false,
-  unmountOnExit: false,
+  unmountOnExit: false
 };
 
 const contextTypes = {
   $bs_tabContainer: PropTypes.shape({
-    activeKey: PropTypes.any,
-  }),
+    activeKey: PropTypes.any
+  })
 };
 
 const childContextTypes = {
   $bs_tabContent: PropTypes.shape({
     bsClass: PropTypes.string,
-    animation: PropTypes.oneOfType([
-      PropTypes.bool, elementType,
-    ]),
+    animation: PropTypes.oneOfType([PropTypes.bool, elementType]),
     activeKey: PropTypes.any,
     mountOnEnter: PropTypes.bool,
     unmountOnExit: PropTypes.bool,
     onPaneEnter: PropTypes.func.isRequired,
     onPaneExited: PropTypes.func.isRequired,
-    exiting: PropTypes.bool.isRequired,
-  }),
+    exiting: PropTypes.bool.isRequired
+  })
 };
 
 class TabContent extends React.Component {
@@ -69,7 +68,7 @@ class TabContent extends React.Component {
     // but the active key does not.
     this.state = {
       activeKey: null,
-      activeChild: null,
+      activeChild: null
     };
   }
 
@@ -93,8 +92,8 @@ class TabContent extends React.Component {
         unmountOnExit,
         onPaneEnter: this.handlePaneEnter,
         onPaneExited: this.handlePaneExited,
-        exiting,
-      },
+        exiting
+      }
     };
   }
 
@@ -106,6 +105,11 @@ class TabContent extends React.Component {
 
   componentWillUnmount() {
     this.isUnmounted = true;
+  }
+
+  getContainerActiveKey() {
+    const tabContainer = this.context.$bs_tabContainer;
+    return tabContainer && tabContainer.activeKey;
   }
 
   handlePaneEnter(child, childKey) {
@@ -120,7 +124,7 @@ class TabContent extends React.Component {
 
     this.setState({
       activeKey: childKey,
-      activeChild: child,
+      activeChild: child
     });
 
     return true;
@@ -139,20 +143,17 @@ class TabContent extends React.Component {
 
       return {
         activeKey: null,
-        activeChild: null,
+        activeChild: null
       };
     });
-  }
-
-  getContainerActiveKey() {
-    const tabContainer = this.context.$bs_tabContainer;
-    return tabContainer && tabContainer.activeKey;
   }
 
   render() {
     const { componentClass: Component, className, ...props } = this.props;
     const [bsProps, elementProps] = splitBsPropsAndOmit(props, [
-      'animation', 'mountOnEnter', 'unmountOnExit',
+      'animation',
+      'mountOnEnter',
+      'unmountOnExit'
     ]);
 
     return (

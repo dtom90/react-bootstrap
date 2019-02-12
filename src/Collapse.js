@@ -2,14 +2,19 @@ import classNames from 'classnames';
 import css from 'dom-helpers/style';
 import React from 'react';
 import PropTypes from 'prop-types';
-import Transition from 'react-overlays/lib/Transition';
+import Transition, {
+  EXITED,
+  ENTERED,
+  ENTERING,
+  EXITING
+} from 'react-transition-group/Transition';
 
 import capitalize from './utils/capitalize';
 import createChainedFunction from './utils/createChainedFunction';
 
 const MARGINS = {
   height: ['marginTop', 'marginBottom'],
-  width: ['marginLeft', 'marginRight'],
+  width: ['marginLeft', 'marginRight']
 };
 
 // reading a dimension prop will cause the browser to recalculate,
@@ -22,11 +27,19 @@ function getDimensionValue(dimension, elem) {
   let value = elem[`offset${capitalize(dimension)}`];
   let margins = MARGINS[dimension];
 
-  return (value +
+  return (
+    value +
     parseInt(css(elem, margins[0]), 10) +
     parseInt(css(elem, margins[1]), 10)
   );
 }
+
+const collapseStyles = {
+  [EXITED]: 'collapse',
+  [EXITING]: 'collapsing',
+  [ENTERING]: 'collapsing',
+  [ENTERED]: 'collapse in'
+};
 
 const propTypes = {
   /**
@@ -48,7 +61,7 @@ const propTypes = {
    * Run the expand animation when the component mounts, if it is initially
    * shown
    */
-  transitionAppear: PropTypes.bool,
+  appear: PropTypes.bool,
 
   /**
    * Duration of the collapse animation in milliseconds, to ensure that
@@ -91,7 +104,7 @@ const propTypes = {
    */
   dimension: PropTypes.oneOfType([
     PropTypes.oneOf(['height', 'width']),
-    PropTypes.func,
+    PropTypes.func
   ]),
 
   /**
@@ -106,7 +119,7 @@ const propTypes = {
   /**
    * ARIA role of collapsible element
    */
-  role: PropTypes.string,
+  role: PropTypes.string
 };
 
 const defaultProps = {
@@ -114,52 +127,14 @@ const defaultProps = {
   timeout: 300,
   mountOnEnter: false,
   unmountOnExit: false,
-  transitionAppear: false,
+  appear: false,
 
   dimension: 'height',
-  getDimensionValue,
+  getDimensionValue
 };
 
 class Collapse extends React.Component {
-  constructor(props, context) {
-    super(props, context);
-
-    this.handleEnter = this.handleEnter.bind(this);
-    this.handleEntering = this.handleEntering.bind(this);
-    this.handleEntered = this.handleEntered.bind(this);
-    this.handleExit = this.handleExit.bind(this);
-    this.handleExiting = this.handleExiting.bind(this);
-  }
-
-  /* -- Expanding -- */
-  handleEnter(elem) {
-    const dimension = this._dimension();
-    elem.style[dimension] = '0';
-  }
-
-  handleEntering(elem) {
-    const dimension = this._dimension();
-    elem.style[dimension] = this._getScrollDimensionValue(elem, dimension);
-  }
-
-  handleEntered(elem) {
-    const dimension = this._dimension();
-    elem.style[dimension] = null;
-  }
-
-  /* -- Collapsing -- */
-  handleExit(elem) {
-    const dimension = this._dimension();
-    elem.style[dimension] = this.props.getDimensionValue(dimension, elem) + 'px';
-    triggerBrowserReflow(elem);
-  }
-
-  handleExiting(elem) {
-    const dimension = this._dimension();
-    elem.style[dimension] = '0';
-  }
-
-  _dimension() {
+  getDimension() {
     return typeof this.props.dimension === 'function'
       ? this.props.dimension()
       : this.props.dimension;
@@ -170,44 +145,80 @@ class Collapse extends React.Component {
     return `${elem[`scroll${capitalize(dimension)}`]}px`;
   }
 
+  /* -- Expanding -- */
+  handleEnter = elem => {
+    elem.style[this.getDimension()] = '0';
+  };
+
+  handleEntering = elem => {
+    const dimension = this.getDimension();
+    elem.style[dimension] = this._getScrollDimensionValue(elem, dimension);
+  };
+
+  handleEntered = elem => {
+    elem.style[this.getDimension()] = null;
+  };
+
+  /* -- Collapsing -- */
+  handleExit = elem => {
+    const dimension = this.getDimension();
+    elem.style[dimension] = `${this.props.getDimensionValue(
+      dimension,
+      elem
+    )}px`;
+    triggerBrowserReflow(elem);
+  };
+
+  handleExiting = elem => {
+    elem.style[this.getDimension()] = '0';
+  };
+
   render() {
     const {
-      onEnter, onEntering, onEntered, onExit, onExiting, className, ...props
+      onEnter,
+      onEntering,
+      onEntered,
+      onExit,
+      onExiting,
+      className,
+      children,
+      ...props
     } = this.props;
 
     delete props.dimension;
     delete props.getDimensionValue;
 
-    const handleEnter =
-      createChainedFunction(this.handleEnter, onEnter);
-    const handleEntering =
-      createChainedFunction(this.handleEntering, onEntering);
-    const handleEntered =
-      createChainedFunction(this.handleEntered, onEntered);
-    const handleExit =
-      createChainedFunction(this.handleExit, onExit);
-    const handleExiting =
-      createChainedFunction(this.handleExiting, onExiting);
-
-    const classes = {
-      width: this._dimension() === 'width',
-    };
+    const handleEnter = createChainedFunction(this.handleEnter, onEnter);
+    const handleEntering = createChainedFunction(
+      this.handleEntering,
+      onEntering
+    );
+    const handleEntered = createChainedFunction(this.handleEntered, onEntered);
+    const handleExit = createChainedFunction(this.handleExit, onExit);
+    const handleExiting = createChainedFunction(this.handleExiting, onExiting);
 
     return (
       <Transition
         {...props}
         aria-expanded={props.role ? props.in : null}
-        className={classNames(className, classes)}
-        exitedClassName="collapse"
-        exitingClassName="collapsing"
-        enteredClassName="collapse in"
-        enteringClassName="collapsing"
         onEnter={handleEnter}
         onEntering={handleEntering}
         onEntered={handleEntered}
         onExit={handleExit}
         onExiting={handleExiting}
-      />
+      >
+        {(state, innerProps) =>
+          React.cloneElement(children, {
+            ...innerProps,
+            className: classNames(
+              className,
+              children.props.className,
+              collapseStyles[state],
+              this.getDimension() === 'width' && 'width'
+            )
+          })
+        }
+      </Transition>
     );
   }
 }

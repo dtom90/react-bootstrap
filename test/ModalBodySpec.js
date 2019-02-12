@@ -6,17 +6,13 @@ import Modal from '../src/Modal';
 
 describe('Modal.Body', () => {
   it('uses "div" by default', () => {
-    const instance = ReactTestUtils.renderIntoDocument(
-      <Modal.Body />
-    );
+    const instance = ReactTestUtils.renderIntoDocument(<Modal.Body />);
 
     assert.equal(ReactDOM.findDOMNode(instance).nodeName, 'DIV');
   });
 
   it('has "modal-body" class', () => {
-    const instance = ReactTestUtils.renderIntoDocument(
-      <Modal.Body />
-    );
+    const instance = ReactTestUtils.renderIntoDocument(<Modal.Body />);
 
     assert.include(ReactDOM.findDOMNode(instance).className, 'modal-body');
   });
@@ -45,6 +41,8 @@ describe('Modal.Body', () => {
         <strong>Content</strong>
       </Modal.Body>
     );
-    assert.ok(ReactTestUtils.findRenderedDOMComponentWithTag(instance, 'strong'));
+    assert.ok(
+      ReactTestUtils.findRenderedDOMComponentWithTag(instance, 'strong')
+    );
   });
 });

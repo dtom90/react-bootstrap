@@ -12,10 +12,22 @@ describe('Popover', () => {
       </Popover>
     );
 
-    assert.ok(ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'popover-title'));
-    assert.ok(ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'popover-content'));
+    assert.ok(
+      ReactTestUtils.findRenderedDOMComponentWithClass(
+        instance,
+        'popover-title'
+      )
+    );
+    assert.ok(
+      ReactTestUtils.findRenderedDOMComponentWithClass(
+        instance,
+        'popover-content'
+      )
+    );
 
-    assert.ok(ReactTestUtils.findRenderedDOMComponentWithTag(instance, 'strong'));
+    assert.ok(
+      ReactTestUtils.findRenderedDOMComponentWithTag(instance, 'strong')
+    );
 
     assert.equal(ReactDOM.findDOMNode(instance).style.display, 'block');
   });

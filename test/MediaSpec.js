@@ -6,17 +6,13 @@ import Media from '../src/Media';
 
 describe('Media', () => {
   it('uses "div" by default', () => {
-    const instance = ReactTestUtils.renderIntoDocument(
-      <Media />
-    );
+    const instance = ReactTestUtils.renderIntoDocument(<Media />);
 
     assert.equal(ReactDOM.findDOMNode(instance).nodeName, 'DIV');
   });
 
   it('has "media" class', () => {
-    const instance = ReactTestUtils.renderIntoDocument(
-      <Media />
-    );
+    const instance = ReactTestUtils.renderIntoDocument(<Media />);
 
     assert.include(ReactDOM.findDOMNode(instance).className, 'media');
   });
@@ -44,6 +40,8 @@ describe('Media', () => {
         <strong>Children</strong>
       </Media>
     );
-    assert.ok(ReactTestUtils.findRenderedDOMComponentWithTag(instance, 'strong'));
+    assert.ok(
+      ReactTestUtils.findRenderedDOMComponentWithTag(instance, 'strong')
+    );
   });
 });

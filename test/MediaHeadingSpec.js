@@ -6,17 +6,13 @@ import Media from '../src/Media';
 
 describe('Media.Heading', () => {
   it('uses "h4" by default', () => {
-    const instance = ReactTestUtils.renderIntoDocument(
-      <Media.Heading />
-    );
+    const instance = ReactTestUtils.renderIntoDocument(<Media.Heading />);
 
     assert.equal(ReactDOM.findDOMNode(instance).nodeName, 'H4');
   });
 
   it('has "media-heading" class', () => {
-    const instance = ReactTestUtils.renderIntoDocument(
-      <Media.Heading />
-    );
+    const instance = ReactTestUtils.renderIntoDocument(<Media.Heading />);
 
     assert.include(ReactDOM.findDOMNode(instance).className, 'media-heading');
   });
@@ -44,6 +40,8 @@ describe('Media.Heading', () => {
         <strong>Children</strong>
       </Media.Heading>
     );
-    assert.ok(ReactTestUtils.findRenderedDOMComponentWithTag(instance, 'strong'));
+    assert.ok(
+      ReactTestUtils.findRenderedDOMComponentWithTag(instance, 'strong')
+    );
   });
 });

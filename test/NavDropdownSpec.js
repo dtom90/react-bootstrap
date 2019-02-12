@@ -17,8 +17,13 @@ describe('<NavDropdown>', () => {
       </Nav>
     );
 
-    const dropdown = ReactDOM.findDOMNode(ReactTestUtils.findRenderedComponentWithType(instance, NavDropdown));
-    const button = ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'dropdown-toggle');
+    const dropdown = ReactDOM.findDOMNode(
+      ReactTestUtils.findRenderedComponentWithType(instance, NavDropdown)
+    );
+    const button = ReactTestUtils.findRenderedDOMComponentWithClass(
+      instance,
+      'dropdown-toggle'
+    );
 
     assert.equal(dropdown.nodeName, 'LI');
     assert.ok(dropdown.className.match(/\bdropdown\b/));
@@ -38,7 +43,9 @@ describe('<NavDropdown>', () => {
 
     const li = ReactDOM.findDOMNode(instance);
 
-    assert.ok(ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'active'));
+    assert.ok(
+      ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'active')
+    );
     assert.ok(li.className.match(/\btest-class\b/)); // it still has the given className
     assert.ok(li.className.match(/\bactive\b/)); // plus the active class
   });
@@ -76,8 +83,14 @@ describe('<NavDropdown>', () => {
     }
 
     const instance = ReactTestUtils.renderIntoDocument(<OpenProp />);
-    const outerToggle = ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'outer-button');
-    const dropdownNode = ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'dropdown');
+    const outerToggle = ReactTestUtils.findRenderedDOMComponentWithClass(
+      instance,
+      'outer-button'
+    );
+    const dropdownNode = ReactTestUtils.findRenderedDOMComponentWithClass(
+      instance,
+      'dropdown'
+    );
 
     dropdownNode.className.should.not.match(/\bopen\b/);
     ReactTestUtils.Simulate.click(outerToggle);
@@ -98,7 +111,8 @@ describe('<NavDropdown>', () => {
     expect(ReactDOM.findDOMNode(instance).className).to.match(/active/);
 
     const items = ReactTestUtils.scryRenderedComponentsWithType(
-      instance, MenuItem
+      instance,
+      MenuItem
     );
     expect(ReactDOM.findDOMNode(items[0]).className).to.not.match(/active/);
     expect(ReactDOM.findDOMNode(items[1]).className).to.match(/active/);
@@ -121,7 +135,8 @@ describe('<NavDropdown>', () => {
     );
 
     const container = ReactTestUtils.findRenderedComponentWithType(
-      instance, Container,
+      instance,
+      Container
     );
     expect(container.props.active).to.not.be.false;
   });
@@ -133,7 +148,17 @@ describe('<NavDropdown>', () => {
       </NavDropdown>
     );
 
-    assert.ok(ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'my-dropdown-toggle'));
-    assert.ok(ReactTestUtils.findRenderedDOMComponentWithClass(instance, 'my-dropdown-menu'));
+    assert.ok(
+      ReactTestUtils.findRenderedDOMComponentWithClass(
+        instance,
+        'my-dropdown-toggle'
+      )
+    );
+    assert.ok(
+      ReactTestUtils.findRenderedDOMComponentWithClass(
+        instance,
+        'my-dropdown-menu'
+      )
+    );
   });
 });

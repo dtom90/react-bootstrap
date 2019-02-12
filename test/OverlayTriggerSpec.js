@@ -12,9 +12,7 @@ import { render } from './helpers';
 describe('<OverlayTrigger>', () => {
   // Swallow extra props.
   const Div = ({ className, children }) => (
-    <div className={className}>
-      {children}
-    </div>
+    <div className={className}>{children}</div>
   );
 
   it('Should create OverlayTrigger element', () => {
@@ -87,15 +85,16 @@ describe('<OverlayTrigger>', () => {
       document.body.removeChild(mountPoint);
     });
 
-    it('Should keep trigger handlers', (done) => {
+    it('Should keep trigger handlers', done => {
       const instance = render(
         <div>
           <OverlayTrigger trigger="focus" overlay={<Div>test</Div>}>
             <button onBlur={() => done()}>button</button>
           </OverlayTrigger>
           <input id="target" />
-        </div>
-      , mountPoint);
+        </div>,
+        mountPoint
+      );
 
       const overlayTrigger = instance.firstChild;
       ReactTestUtils.Simulate.blur(overlayTrigger);
@@ -104,7 +103,10 @@ describe('<OverlayTrigger>', () => {
 
   it('Should maintain overlay classname', () => {
     const instance = ReactTestUtils.renderIntoDocument(
-      <OverlayTrigger trigger="click" overlay={<Div className="test-overlay">test</Div>}>
+      <OverlayTrigger
+        trigger="click"
+        overlay={<Div className="test-overlay">test</Div>}
+      >
         <button>button</button>
       </OverlayTrigger>
     );
@@ -115,7 +117,7 @@ describe('<OverlayTrigger>', () => {
     expect(document.getElementsByClassName('test-overlay').length).to.equal(1);
   });
 
-  it('Should pass transition callbacks to Transition', (done) => {
+  it('Should pass transition callbacks to Transition', done => {
     let count = 0;
     const increment = () => count++;
 
@@ -147,10 +149,9 @@ describe('<OverlayTrigger>', () => {
     ReactTestUtils.Simulate.click(overlayTrigger);
   });
 
-
   it('Should forward requested context', () => {
     const contextTypes = {
-      key: PropTypes.string,
+      key: PropTypes.string
     };
 
     const contextSpy = sinon.spy();
@@ -171,10 +172,7 @@ describe('<OverlayTrigger>', () => {
 
       render() {
         return (
-          <OverlayTrigger
-            trigger="click"
-            overlay={<ContextReader />}
-          >
+          <OverlayTrigger trigger="click" overlay={<ContextReader />}>
             <button>button</button>
           </OverlayTrigger>
         );
@@ -193,11 +191,11 @@ describe('<OverlayTrigger>', () => {
     [
       {
         name: 'Popover',
-        overlay: (<Popover id="test-popover">test</Popover>)
+        overlay: <Popover id="test-popover">test</Popover>
       },
       {
         name: 'Tooltip',
-        overlay: (<Tooltip id="test-tooltip">test</Tooltip>)
+        overlay: <Tooltip id="test-tooltip">test</Tooltip>
       }
     ].forEach(testCase => {
       describe(testCase.name, () => {
@@ -240,7 +238,8 @@ describe('<OverlayTrigger>', () => {
           instance = ReactTestUtils.renderIntoDocument(
             <OverlayTrigger
               overlay={<Div>test</Div>}
-              trigger="click" rootClose={testCase.rootClose}
+              trigger="click"
+              rootClose={testCase.rootClose}
             >
               <button>button</button>
             </OverlayTrigger>
@@ -273,11 +272,7 @@ describe('<OverlayTrigger>', () => {
 
       it('should hide after clicking on trigger', () => {
         const instance = ReactDOM.render(
-          <OverlayTrigger
-            overlay={<Div>test</Div>}
-            trigger="click"
-            rootClose
-          >
+          <OverlayTrigger overlay={<Div>test</Div>} trigger="click" rootClose>
             <button>button</button>
           </OverlayTrigger>,
           mountNode
@@ -313,9 +308,7 @@ describe('<OverlayTrigger>', () => {
 
           render() {
             if (this.state.replaced) {
-              return (
-                <div>replaced</div>
-              );
+              return <div>replaced</div>;
             }
 
             return (

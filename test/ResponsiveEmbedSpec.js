@@ -62,7 +62,7 @@ describe('ResponsiveEmbed', () => {
 
   it('should pass custom attributes to child element', () => {
     const instance = ReactTestUtils.renderIntoDocument(
-      <ResponsiveEmbed a16by9 style={{color: 'white'}}>
+      <ResponsiveEmbed a16by9 style={{ color: 'white' }}>
         <div />
       </ResponsiveEmbed>
     );

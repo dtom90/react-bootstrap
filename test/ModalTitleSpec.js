@@ -6,17 +6,13 @@ import Modal from '../src/Modal';
 
 describe('Modal.Title', () => {
   it('uses "h4" by default', () => {
-    const instance = ReactTestUtils.renderIntoDocument(
-      <Modal.Title />
-    );
+    const instance = ReactTestUtils.renderIntoDocument(<Modal.Title />);
 
     assert.equal(ReactDOM.findDOMNode(instance).nodeName, 'H4');
   });
 
   it('has "modal-title" class', () => {
-    const instance = ReactTestUtils.renderIntoDocument(
-      <Modal.Title />
-    );
+    const instance = ReactTestUtils.renderIntoDocument(<Modal.Title />);
 
     assert.include(ReactDOM.findDOMNode(instance).className, 'modal-title');
   });
@@ -45,6 +41,8 @@ describe('Modal.Title', () => {
         <strong>Children</strong>
       </Modal.Title>
     );
-    assert.ok(ReactTestUtils.findRenderedDOMComponentWithTag(instance, 'strong'));
+    assert.ok(
+      ReactTestUtils.findRenderedDOMComponentWithTag(instance, 'strong')
+    );
   });
 });

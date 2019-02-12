@@ -99,7 +99,7 @@ function filter(children, func, context) {
 
 function find(children, func, context) {
   let index = 0;
-  let result = undefined;
+  let result;
 
   React.Children.forEach(children, child => {
     if (result) {
@@ -179,5 +179,5 @@ export default {
   filter,
   every,
   some,
-  toArray,
+  toArray
 };

@@ -11,16 +11,17 @@ describe('PageHeader', () => {
         <strong>Content</strong>
       </PageHeader>
     );
-    assert.ok(ReactTestUtils.findRenderedDOMComponentWithTag(instance, 'strong'));
+    assert.ok(
+      ReactTestUtils.findRenderedDOMComponentWithTag(instance, 'strong')
+    );
   });
 
   it('Should have a page-header class', () => {
     let instance = ReactTestUtils.renderIntoDocument(
-      <PageHeader>
-        Content
-      </PageHeader>
+      <PageHeader>Content</PageHeader>
     );
-    assert.ok(ReactDOM.findDOMNode(instance).className.match(/\bpage-header\b/));
+    assert.ok(
+      ReactDOM.findDOMNode(instance).className.match(/\bpage-header\b/)
+    );
   });
-
 });

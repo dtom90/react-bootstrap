@@ -2,11 +2,7 @@ import classNames from 'classnames';
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-
-import TransitionEvents from './utils/TransitionEvents';
-
-// TODO: This should use a timeout instead of TransitionEvents, or else just
-// not wait until transition end to trigger continuing animations.
+import transition from 'dom-helpers/transition';
 
 const propTypes = {
   direction: PropTypes.oneOf(['prev', 'next']),
@@ -14,13 +10,13 @@ const propTypes = {
   active: PropTypes.bool,
   animateIn: PropTypes.bool,
   animateOut: PropTypes.bool,
-  index: PropTypes.number,
+  index: PropTypes.number
 };
 
 const defaultProps = {
   active: false,
   animateIn: false,
-  animateOut: false,
+  animateOut: false
 };
 
 class CarouselItem extends React.Component {
@@ -30,7 +26,7 @@ class CarouselItem extends React.Component {
     this.handleAnimateOutEnd = this.handleAnimateOutEnd.bind(this);
 
     this.state = {
-      direction: null,
+      direction: null
     };
 
     this.isUnmounted = false;
@@ -47,9 +43,7 @@ class CarouselItem extends React.Component {
     const prevActive = prevProps.active;
 
     if (!active && prevActive) {
-      TransitionEvents.addEndEventListener(
-        ReactDOM.findDOMNode(this), this.handleAnimateOutEnd
-      );
+      transition.end(ReactDOM.findDOMNode(this), this.handleAnimateOutEnd);
     }
 
     if (active !== prevActive) {
@@ -77,13 +71,18 @@ class CarouselItem extends React.Component {
     }
 
     this.setState({
-      direction: this.props.direction === 'prev' ? 'right' : 'left',
+      direction: this.props.direction === 'prev' ? 'right' : 'left'
     });
   }
 
   render() {
     const {
-      direction, active, animateIn, animateOut, className, ...props
+      direction,
+      active,
+      animateIn,
+      animateOut,
+      className,
+      ...props
     } = this.props;
 
     delete props.onAnimateOutEnd;
@@ -91,7 +90,7 @@ class CarouselItem extends React.Component {
 
     const classes = {
       item: true,
-      active: active && !animateIn || animateOut,
+      active: (active && !animateIn) || animateOut
     };
     if (direction && active && animateIn) {
       classes[direction] = true;
@@ -100,12 +99,7 @@ class CarouselItem extends React.Component {
       classes[this.state.direction] = true;
     }
 
-    return (
-      <div
-        {...props}
-        className={classNames(className, classes)}
-      />
-    );
+    return <div {...props} className={classNames(className, classes)} />;
   }
 }
 

@@ -11,9 +11,7 @@ describe('ButtonToolbar', () => {
     let instance = ReactTestUtils.renderIntoDocument(
       <ButtonToolbar>
         <ButtonGroup>
-          <Button>
-            Title
-          </Button>
+          <Button>Title</Button>
         </ButtonGroup>
       </ButtonToolbar>
     );

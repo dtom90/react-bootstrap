@@ -1,40 +1,34 @@
 import React from 'react';
-import tsp from 'teaspoon';
+import { mount, shallow } from 'enzyme';
 
 import SafeAnchor from '../src/SafeAnchor';
 
 describe('SafeAnchor', () => {
   it('renders an anchor tag', () => {
-    tsp(<SafeAnchor />)
-      .render()
-      .dom()
-      .tagName
-      .should.equal('A');
+    mount(<SafeAnchor />)
+      .getDOMNode()
+      .tagName.should.equal('A');
   });
 
   it('forwards provided href', () => {
-    tsp(<SafeAnchor href="http://google.com" />)
-      .shallowRender()
+    shallow(<SafeAnchor href="http://google.com" />)
       .find('a')
-      .props('href')
+      .prop('href')
       .should.equal('http://google.com');
   });
 
   it('ensures that an href is provided', () => {
-    tsp(<SafeAnchor />)
-      .render()
-      .dom()
-      .hasAttribute('href')
-      .should.be.true;
+    mount(<SafeAnchor />)
+      .getDOMNode()
+      .hasAttribute('href').should.be.true;
   });
 
   it('forwards onClick handler', () => {
     const handleClick = sinon.spy();
 
-    tsp(<SafeAnchor onClick={handleClick} />)
-      .shallowRender()
+    shallow(<SafeAnchor onClick={handleClick} />)
       .find('a')
-      .trigger('click', { preventDefault() {} });
+      .simulate('click', { preventDefault() {} });
 
     handleClick.should.have.been.calledOnce;
   });
@@ -42,10 +36,9 @@ describe('SafeAnchor', () => {
   it('provides onClick handler as onKeyDown handler for "space"', () => {
     const handleClick = sinon.spy();
 
-    tsp(<SafeAnchor onClick={handleClick} />)
-      .shallowRender()
+    shallow(<SafeAnchor onClick={handleClick} />)
       .find('a')
-      .trigger('keyDown', { key: ' ', preventDefault() {} });
+      .simulate('keyDown', { key: ' ', preventDefault() {} });
 
     handleClick.should.have.been.calledOnce;
   });
@@ -53,14 +46,13 @@ describe('SafeAnchor', () => {
   it('prevents default when no href is provided', () => {
     const handleClick = sinon.spy();
 
-    tsp(<SafeAnchor onClick={handleClick} />)
-      .render()
+    const wrapper = mount(<SafeAnchor onClick={handleClick} />);
+    wrapper.find('a').simulate('click');
+
+    wrapper
+      .setProps({ href: '#' })
       .find('a')
-        .trigger('click')
-        .end()
-      .props({ href: '#' })
-      .find('a')
-        .trigger('click');
+      .simulate('click');
 
     expect(handleClick).to.have.been.calledTwice;
     expect(handleClick.getCall(0).args[0].isDefaultPrevented()).to.be.true;
@@ -70,10 +62,9 @@ describe('SafeAnchor', () => {
   it('does not prevent default when href is provided', () => {
     const handleClick = sinon.spy();
 
-    tsp(<SafeAnchor href="#foo" onClick={handleClick} />)
-      .render()
+    mount(<SafeAnchor href="#foo" onClick={handleClick} />)
       .find('a')
-      .trigger('click');
+      .simulate('click');
 
     expect(handleClick).to.have.been.calledOnce;
     expect(handleClick.getCall(0).args[0].isDefaultPrevented()).to.be.false;
@@ -83,13 +74,11 @@ describe('SafeAnchor', () => {
     let clickSpy = sinon.spy();
     let spy = sinon.spy(SafeAnchor.prototype, 'handleClick');
 
-    tsp(
+    mount(
       <SafeAnchor disabled href="#foo" onClick={clickSpy}>
         Title
       </SafeAnchor>
-    )
-    .render()
-    .trigger('click');
+    ).simulate('click');
 
     expect(spy).to.have.been.calledOnce;
     expect(clickSpy).to.have.not.been.called;
@@ -98,41 +87,36 @@ describe('SafeAnchor', () => {
   });
 
   it('forwards provided role', () => {
-    tsp(<SafeAnchor role="test" />)
-      .shallowRender()
+    shallow(<SafeAnchor role="test" />)
       .find('a')
-      .props('role')
+      .prop('role')
       .should.equal('test');
   });
 
   it('forwards provided role with href', () => {
-    tsp(<SafeAnchor role="test" href="http://google.com" />)
-      .shallowRender()
+    shallow(<SafeAnchor role="test" href="http://google.com" />)
       .find('a')
-      .props('role')
+      .prop('role')
       .should.equal('test');
   });
 
   it('set role=button with no provided href', () => {
-    tsp(<SafeAnchor />)
-      .shallowRender()
+    shallow(<SafeAnchor />)
       .find('a')
-      .props('role')
+      .prop('role')
       .should.equal('button');
 
-    tsp(<SafeAnchor href="#" />)
-      .shallowRender()
+    shallow(<SafeAnchor href="#" />)
       .find('a')
-      .props('role')
+      .prop('role')
       .should.equal('button');
   });
 
   it('sets no role with provided href', () => {
     expect(
-      tsp(<SafeAnchor href="http://google.com" />)
-        .shallowRender()
+      shallow(<SafeAnchor href="http://google.com" />)
         .find('a')
-        .props('role')
+        .prop('role')
     ).to.not.exist;
   });
 });

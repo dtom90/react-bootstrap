@@ -17,7 +17,7 @@ import {
   bsStyles,
   getClassSet,
   prefix,
-  splitBsPropsAndOmit,
+  splitBsPropsAndOmit
 } from './utils/bootstrapUtils';
 import { Style } from './utils/StyleConfig';
 import createChainedFunction from './utils/createChainedFunction';
@@ -53,10 +53,10 @@ const propTypes = {
   componentClass: elementType,
   /**
    * A callback fired when the `<Navbar>` body collapses or expands. Fired when
-   * a `<Navbar.Toggle>` is clicked and called with the new `navExpanded`
+   * a `<Navbar.Toggle>` is clicked and called with the new `expanded`
    * boolean value.
    *
-   * @controllable navExpanded
+   * @controllable expanded
    */
   onToggle: PropTypes.func,
   /**
@@ -68,8 +68,8 @@ const propTypes = {
    *
    * ```js
    * function (
-   * 	Any eventKey,
-   * 	SyntheticEvent event?
+   *  Any eventKey,
+   *  SyntheticEvent event?
    * )
    * ```
    *
@@ -96,7 +96,7 @@ const propTypes = {
    */
   expanded: PropTypes.bool,
 
-  role: PropTypes.string,
+  role: PropTypes.string
 };
 
 const defaultProps = {
@@ -106,7 +106,7 @@ const defaultProps = {
   staticTop: false,
   inverse: false,
   fluid: false,
-  collapseOnSelect: false,
+  collapseOnSelect: false
 };
 
 const childContextTypes = {
@@ -114,7 +114,7 @@ const childContextTypes = {
     bsClass: PropTypes.string,
     expanded: PropTypes.bool,
     onToggle: PropTypes.func.isRequired,
-    onSelect: PropTypes.func,
+    onSelect: PropTypes.func
   })
 };
 
@@ -135,9 +135,10 @@ class Navbar extends React.Component {
         expanded,
         onToggle: this.handleToggle,
         onSelect: createChainedFunction(
-          onSelect, collapseOnSelect ? this.handleCollapse : null,
-        ),
-      },
+          onSelect,
+          collapseOnSelect ? this.handleCollapse : null
+        )
+      }
     };
   }
 
@@ -169,7 +170,10 @@ class Navbar extends React.Component {
     } = this.props;
 
     const [bsProps, elementProps] = splitBsPropsAndOmit(props, [
-      'expanded', 'onToggle', 'onSelect', 'collapseOnSelect',
+      'expanded',
+      'onToggle',
+      'onSelect',
+      'collapseOnSelect'
     ]);
 
     // will result in some false positives but that seems better
@@ -187,17 +191,12 @@ class Navbar extends React.Component {
       ...getClassSet(bsProps),
       [prefix(bsProps, 'fixed-top')]: fixedTop,
       [prefix(bsProps, 'fixed-bottom')]: fixedBottom,
-      [prefix(bsProps, 'static-top')]: staticTop,
+      [prefix(bsProps, 'static-top')]: staticTop
     };
 
     return (
-      <Component
-        {...elementProps}
-        className={classNames(className, classes)}
-      >
-        <Grid fluid={fluid}>
-          {children}
-        </Grid>
+      <Component {...elementProps} className={classNames(className, classes)}>
+        <Grid fluid={fluid}>{children}</Grid>
       </Component>
     );
   }
@@ -222,7 +221,7 @@ function createSimpleWrapper(tag, suffix, displayName) {
         className,
         prefix(navbarProps, suffix),
         pullRight && prefix(navbarProps, 'right'),
-        pullLeft && prefix(navbarProps, 'left'),
+        pullLeft && prefix(navbarProps, 'left')
       )}
     />
   );
@@ -232,19 +231,19 @@ function createSimpleWrapper(tag, suffix, displayName) {
   Wrapper.propTypes = {
     componentClass: elementType,
     pullRight: PropTypes.bool,
-    pullLeft: PropTypes.bool,
+    pullLeft: PropTypes.bool
   };
 
   Wrapper.defaultProps = {
     componentClass: tag,
     pullRight: false,
-    pullLeft: false,
+    pullLeft: false
   };
 
   Wrapper.contextTypes = {
     $bs_navbar: PropTypes.shape({
-      bsClass: PropTypes.string,
-    }),
+      bsClass: PropTypes.string
+    })
   };
 
   return Wrapper;
@@ -260,6 +259,8 @@ UncontrollableNavbar.Text = createSimpleWrapper('p', 'text', 'NavbarText');
 UncontrollableNavbar.Link = createSimpleWrapper('a', 'link', 'NavbarLink');
 
 // Set bsStyles here so they can be overridden.
-export default bsStyles([Style.DEFAULT, Style.INVERSE], Style.DEFAULT,
+export default bsStyles(
+  [Style.DEFAULT, Style.INVERSE],
+  Style.DEFAULT,
   UncontrollableNavbar
 );

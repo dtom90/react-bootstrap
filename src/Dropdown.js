@@ -33,9 +33,9 @@ const propTypes = {
    * @type {string|number}
    * @required
    */
-  id: isRequiredForA11y(PropTypes.oneOfType([
-    PropTypes.string, PropTypes.number,
-  ])),
+  id: isRequiredForA11y(
+    PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  ),
 
   componentClass: elementType,
 
@@ -95,6 +95,10 @@ const propTypes = {
 
   /**
    * Which event when fired outside the component will cause it to be closed
+   *
+   * *Note: For custom dropdown components, you will have to pass the
+   * `rootCloseEvent` to `<RootCloseWrapper>` in your custom dropdown menu
+   * component ([similarly to how it is implemented in `<Dropdown.Menu>`](https://github.com/react-bootstrap/react-bootstrap/blob/v0.31.5/src/DropdownMenu.js#L115-L119)).*
    */
   rootCloseEvent: PropTypes.oneOf(['click', 'mousedown']),
 
@@ -105,11 +109,11 @@ const propTypes = {
   /**
    * @private
    */
-  onMouseLeave: PropTypes.func,
+  onMouseLeave: PropTypes.func
 };
 
 const defaultProps = {
-  componentClass: ButtonGroup,
+  componentClass: ButtonGroup
 };
 
 class Dropdown extends React.Component {
@@ -131,7 +135,8 @@ class Dropdown extends React.Component {
   componentWillUpdate(nextProps) {
     if (!nextProps.open && this.props.open) {
       this._focusInDropdown = contains(
-        ReactDOM.findDOMNode(this.menu), activeElement(document)
+        ReactDOM.findDOMNode(this.menu),
+        activeElement(document)
       );
     }
   }
@@ -154,12 +159,43 @@ class Dropdown extends React.Component {
     }
   }
 
+  focus() {
+    const toggle = ReactDOM.findDOMNode(this.toggle);
+
+    if (toggle && toggle.focus) {
+      toggle.focus();
+    }
+  }
+
+  focusNextOnOpen() {
+    const menu = this.menu;
+
+    if (!menu || !menu.focusNext) {
+      return;
+    }
+
+    if (
+      this.lastOpenEventType === 'keydown' ||
+      this.props.role === 'menuitem'
+    ) {
+      menu.focusNext();
+    }
+  }
+
   handleClick(event) {
     if (this.props.disabled) {
       return;
     }
 
     this.toggleOpen(event, { source: 'click' });
+  }
+
+  handleClose(event, eventDetails) {
+    if (!this.props.open) {
+      return;
+    }
+
+    this.toggleOpen(event, eventDetails);
   }
 
   handleKeyDown(event) {
@@ -196,71 +232,17 @@ class Dropdown extends React.Component {
     }
   }
 
-  handleClose(event, eventDetails) {
-    if (!this.props.open) {
-      return;
-    }
-
-    this.toggleOpen(event, eventDetails);
-  }
-
-  focusNextOnOpen() {
-    const menu = this.menu;
-
-    if (!menu.focusNext) {
-      return;
-    }
-
-    if (
-      this.lastOpenEventType === 'keydown' ||
-      this.props.role === 'menuitem'
-    ) {
-      menu.focusNext();
-    }
-  }
-
-  focus() {
-    const toggle = ReactDOM.findDOMNode(this.toggle);
-
-    if (toggle && toggle.focus) {
-      toggle.focus();
-    }
-  }
-
-  renderToggle(child, props) {
-    let ref = c => { this.toggle = c; };
-
-    if (typeof child.ref === 'string') {
-      warning(false,
-        'String refs are not supported on `<Dropdown.Toggle>` components. ' +
-        'To apply a ref to the component use the callback signature:\n\n ' +
-        'https://facebook.github.io/react/docs/more-about-refs.html#the-ref-callback-attribute'
-      );
-    } else {
-      ref = createChainedFunction(child.ref, ref);
-    }
-
-    return cloneElement(child, {
-      ...props,
-      ref,
-      bsClass: prefix(props, 'toggle'),
-      onClick: createChainedFunction(
-        child.props.onClick, this.handleClick
-      ),
-      onKeyDown: createChainedFunction(
-        child.props.onKeyDown, this.handleKeyDown
-      ),
-    });
-  }
-
   renderMenu(child, { id, onSelect, rootCloseEvent, ...props }) {
-    let ref = c => { this.menu = c; };
+    let ref = c => {
+      this.menu = c;
+    };
 
     if (typeof child.ref === 'string') {
-      warning(false,
+      warning(
+        false,
         'String refs are not supported on `<Dropdown.Menu>` components. ' +
-        'To apply a ref to the component use the callback signature:\n\n ' +
-        'https://facebook.github.io/react/docs/more-about-refs.html#the-ref-callback-attribute'
+          'To apply a ref to the component use the callback signature:\n\n ' +
+          'https://facebook.github.io/react/docs/more-about-refs.html#the-ref-callback-attribute'
       );
     } else {
       ref = createChainedFunction(child.ref, ref);
@@ -271,15 +253,41 @@ class Dropdown extends React.Component {
       ref,
       labelledBy: id,
       bsClass: prefix(props, 'menu'),
-      onClose: createChainedFunction(
-        child.props.onClose, this.handleClose,
-      ),
+      onClose: createChainedFunction(child.props.onClose, this.handleClose),
       onSelect: createChainedFunction(
         child.props.onSelect,
         onSelect,
-        (key, event) => this.handleClose(event, { source: 'select' }),
+        (key, event) => this.handleClose(event, { source: 'select' })
       ),
       rootCloseEvent
+    });
+  }
+
+  renderToggle(child, props) {
+    let ref = c => {
+      this.toggle = c;
+    };
+
+    if (typeof child.ref === 'string') {
+      warning(
+        false,
+        'String refs are not supported on `<Dropdown.Toggle>` components. ' +
+          'To apply a ref to the component use the callback signature:\n\n ' +
+          'https://facebook.github.io/react/docs/more-about-refs.html#the-ref-callback-attribute'
+      );
+    } else {
+      ref = createChainedFunction(child.ref, ref);
+    }
+
+    return cloneElement(child, {
+      ...props,
+      ref,
+      bsClass: prefix(props, 'toggle'),
+      onClick: createChainedFunction(child.props.onClick, this.handleClick),
+      onKeyDown: createChainedFunction(
+        child.props.onKeyDown,
+        this.handleKeyDown
+      )
     });
   }
 
@@ -305,7 +313,7 @@ class Dropdown extends React.Component {
     const classes = {
       [bsClass]: true,
       open,
-      disabled,
+      disabled
     };
 
     if (dropup) {
@@ -317,19 +325,25 @@ class Dropdown extends React.Component {
     // underlying component, to allow it to render size and style variants.
 
     return (
-      <Component
-        {...props}
-        className={classNames(className, classes)}
-      >
+      <Component {...props} className={classNames(className, classes)}>
         {ValidComponentChildren.map(children, child => {
           switch (child.props.bsRole) {
             case TOGGLE_ROLE:
               return this.renderToggle(child, {
-                id, disabled, open, role, bsClass,
+                id,
+                disabled,
+                open,
+                role,
+                bsClass
               });
             case MENU_ROLE:
               return this.renderMenu(child, {
-                id, open, pullRight, bsClass, onSelect, rootCloseEvent,
+                id,
+                open,
+                pullRight,
+                bsClass,
+                onSelect,
+                rootCloseEvent
               });
             default:
               return child;

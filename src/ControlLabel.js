@@ -10,15 +10,15 @@ const propTypes = {
    * Uses `controlId` from `<FormGroup>` if not explicitly specified.
    */
   htmlFor: PropTypes.string,
-  srOnly: PropTypes.bool,
+  srOnly: PropTypes.bool
 };
 
 const defaultProps = {
-  srOnly: false,
+  srOnly: false
 };
 
 const contextTypes = {
-  $bs_formGroup: PropTypes.object,
+  $bs_formGroup: PropTypes.object
 };
 
 class ControlLabel extends React.Component {
@@ -36,7 +36,7 @@ class ControlLabel extends React.Component {
 
     const classes = {
       ...getClassSet(bsProps),
-      'sr-only': srOnly,
+      'sr-only': srOnly
     };
 
     return (

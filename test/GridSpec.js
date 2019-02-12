@@ -6,24 +6,18 @@ import Grid from '../src/Grid';
 
 describe('<Grid>', () => {
   it('uses "div" by default', () => {
-    let instance = ReactTestUtils.renderIntoDocument(
-      <Grid />
-    );
+    let instance = ReactTestUtils.renderIntoDocument(<Grid />);
 
     assert.equal(ReactDOM.findDOMNode(instance).nodeName, 'DIV');
   });
 
   it('has "container" class by default', () => {
-    let instance = ReactTestUtils.renderIntoDocument(
-      <Grid />
-    );
+    let instance = ReactTestUtils.renderIntoDocument(<Grid />);
     assert.equal(ReactDOM.findDOMNode(instance).className, 'container');
   });
 
   it('turns grid into "full-width" layout via "fluid" property set', () => {
-    let instance = ReactTestUtils.renderIntoDocument(
-      <Grid fluid />
-    );
+    let instance = ReactTestUtils.renderIntoDocument(<Grid fluid />);
     assert.equal(ReactDOM.findDOMNode(instance).className, 'container-fluid');
   });
 
@@ -32,7 +26,9 @@ describe('<Grid>', () => {
       <Grid className="whatever" fluid />
     );
     assert.ok(ReactDOM.findDOMNode(instance).className.match(/\bwhatever\b/));
-    assert.ok(ReactDOM.findDOMNode(instance).className.match(/\bcontainer-fluid\b/));
+    assert.ok(
+      ReactDOM.findDOMNode(instance).className.match(/\bcontainer-fluid\b/)
+    );
   });
 
   it('allows custom elements instead of "div"', () => {

@@ -6,9 +6,14 @@ import warning from 'warning';
 
 import FormControlFeedback from './FormControlFeedback';
 import FormControlStatic from './FormControlStatic';
-import { bsClass, getClassSet, splitBsProps, bsSizes } from './utils/bootstrapUtils';
+import {
+  prefix,
+  bsClass,
+  getClassSet,
+  splitBsProps,
+  bsSizes
+} from './utils/bootstrapUtils';
 import { SIZE_MAP, Size } from './utils/StyleConfig';
-import { prefix } from './utils/bootstrapUtils';
 
 const propTypes = {
   componentClass: elementType,
@@ -27,15 +32,15 @@ const propTypes = {
    * <FormControl inputRef={ref => { this.input = ref; }} />
    * ```
    */
-  inputRef: PropTypes.func,
+  inputRef: PropTypes.func
 };
 
 const defaultProps = {
-  componentClass: 'input',
+  componentClass: 'input'
 };
 
 const contextTypes = {
-  $bs_formGroup: PropTypes.object,
+  $bs_formGroup: PropTypes.object
 };
 
 class FormControl extends React.Component {
@@ -92,6 +97,7 @@ FormControl.contextTypes = contextTypes;
 FormControl.Feedback = FormControlFeedback;
 FormControl.Static = FormControlStatic;
 
-export default bsClass('form-control',
+export default bsClass(
+  'form-control',
   bsSizes([Size.SMALL, Size.LARGE], FormControl)
 );

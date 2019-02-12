@@ -6,17 +6,13 @@ import Modal from '../src/Modal';
 
 describe('Modal.Header', () => {
   it('uses "div" by default', () => {
-    const instance = ReactTestUtils.renderIntoDocument(
-      <Modal.Header />
-    );
+    const instance = ReactTestUtils.renderIntoDocument(<Modal.Header />);
 
     assert.equal(ReactDOM.findDOMNode(instance).nodeName, 'DIV');
   });
 
   it('has "modal-header" class', () => {
-    const instance = ReactTestUtils.renderIntoDocument(
-      <Modal.Header />
-    );
+    const instance = ReactTestUtils.renderIntoDocument(<Modal.Header />);
 
     assert.include(ReactDOM.findDOMNode(instance).className, 'modal-header');
   });
@@ -38,7 +34,9 @@ describe('Modal.Header', () => {
       </Modal.Header>
     );
 
-    assert.ok(ReactTestUtils.findRenderedDOMComponentWithTag(instance, 'strong'));
+    assert.ok(
+      ReactTestUtils.findRenderedDOMComponentWithTag(instance, 'strong')
+    );
   });
 
   it('has closeButton without a containing Modal and renders', () => {
@@ -57,7 +55,7 @@ describe('Modal.Header', () => {
 
     const closeButton = ReactTestUtils.findRenderedDOMComponentWithClass(
       instance,
-      'close',
+      'close'
     );
 
     ReactTestUtils.Simulate.click(closeButton);

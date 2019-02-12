@@ -23,9 +23,8 @@ function deprecationWarning(oldname, newname, link) {
   warned[message] = true;
 }
 
-
-deprecationWarning.wrapper = (Component, ...args) => {
-  return class DeprecatedComponent extends Component {
+deprecationWarning.wrapper = (Component, ...args) =>
+  class DeprecatedComponent extends Component {
     componentWillMount(...methodArgs) {
       deprecationWarning(...args);
 
@@ -34,7 +33,6 @@ deprecationWarning.wrapper = (Component, ...args) => {
       }
     }
   };
-};
 
 export default deprecationWarning;
 

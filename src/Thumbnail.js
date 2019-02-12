@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/alt-text */
+
 import classNames from 'classnames';
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -30,24 +32,25 @@ const propTypes = {
 
 class Thumbnail extends React.Component {
   render() {
-    const { src, alt, onError, onLoad, className, children, ...props } = this.props;
+    const {
+      src,
+      alt,
+      onError,
+      onLoad,
+      className,
+      children,
+      ...props
+    } = this.props;
     const [bsProps, elementProps] = splitBsProps(props);
 
     const Component = elementProps.href ? SafeAnchor : 'div';
     const classes = getClassSet(bsProps);
 
     return (
-      <Component
-        {...elementProps}
-        className={classNames(className, classes)}
-      >
-        <img {...{src, alt, onError, onLoad}} />
+      <Component {...elementProps} className={classNames(className, classes)}>
+        <img {...{ src, alt, onError, onLoad }} />
 
-        {children && (
-          <div className="caption">
-            {children}
-          </div>
-        )}
+        {children && <div className="caption">{children}</div>}
       </Component>
     );
   }

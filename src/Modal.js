@@ -119,20 +119,31 @@ const propTypes = {
   /**
    * @private
    */
-  container: BaseModal.propTypes.container,
+  container: BaseModal.propTypes.container
 };
 
 const defaultProps = {
   ...BaseModal.defaultProps,
   animation: true,
-  dialogComponentClass: ModalDialog,
+  dialogComponentClass: ModalDialog
 };
 
 const childContextTypes = {
   $bs_modal: PropTypes.shape({
-    onHide: PropTypes.func,
-  }),
+    onHide: PropTypes.func
+  })
 };
+
+/* eslint-disable no-use-before-define, react/no-multi-comp */
+function DialogTransition(props) {
+  return <Fade {...props} timeout={Modal.TRANSITION_DURATION} />;
+}
+
+function BackdropTransition(props) {
+  return <Fade {...props} timeout={Modal.BACKDROP_TRANSITION_DURATION} />;
+}
+
+/* eslint-enable no-use-before-define */
 
 class Modal extends React.Component {
   constructor(props, context) {
@@ -142,23 +153,36 @@ class Modal extends React.Component {
     this.handleExited = this.handleExited.bind(this);
     this.handleWindowResize = this.handleWindowResize.bind(this);
     this.handleDialogClick = this.handleDialogClick.bind(this);
+    this.setModalRef = this.setModalRef.bind(this);
 
     this.state = {
-      style: {},
+      style: {}
     };
   }
 
   getChildContext() {
     return {
       $bs_modal: {
-        onHide: this.props.onHide,
-      },
+        onHide: this.props.onHide
+      }
     };
   }
 
   componentWillUnmount() {
     // Clean up the listener if we need to.
     this.handleExited();
+  }
+
+  setModalRef(ref) {
+    this._modal = ref;
+  }
+
+  handleDialogClick(e) {
+    if (e.target !== e.currentTarget) {
+      return;
+    }
+
+    this.props.onHide();
   }
 
   handleEntering() {
@@ -174,14 +198,6 @@ class Modal extends React.Component {
 
   handleWindowResize() {
     this.updateStyle();
-  }
-
-  handleDialogClick(e) {
-    if (e.target !== e.currentTarget) {
-      return;
-    }
-
-    this.props.onHide();
   }
 
   updateStyle() {
@@ -201,10 +217,14 @@ class Modal extends React.Component {
 
     this.setState({
       style: {
-        paddingRight: bodyIsOverflowing && !modalIsOverflowing ?
-          getScrollbarSize() : undefined,
-        paddingLeft: !bodyIsOverflowing && modalIsOverflowing ?
-          getScrollbarSize() : undefined
+        paddingRight:
+          bodyIsOverflowing && !modalIsOverflowing
+            ? getScrollbarSize()
+            : undefined,
+        paddingLeft:
+          !bodyIsOverflowing && modalIsOverflowing
+            ? getScrollbarSize()
+            : undefined
       }
     });
   }
@@ -224,24 +244,26 @@ class Modal extends React.Component {
       ...props
     } = this.props;
 
-    const [baseModalProps, dialogProps] =
-      splitComponentProps(props, BaseModal);
+    const [baseModalProps, dialogProps] = splitComponentProps(props, BaseModal);
 
     const inClassName = show && !animation && 'in';
 
     return (
       <BaseModal
         {...baseModalProps}
-        ref={c => { this._modal = c; }}
+        ref={this.setModalRef}
         show={show}
+        containerClassName={prefix(props, 'open')}
+        transition={animation ? DialogTransition : undefined}
+        backdrop={backdrop}
+        backdropTransition={animation ? BackdropTransition : undefined}
+        backdropClassName={classNames(
+          prefix(props, 'backdrop'),
+          backdropClassName,
+          inClassName
+        )}
         onEntering={createChainedFunction(onEntering, this.handleEntering)}
         onExited={createChainedFunction(onExited, this.handleExited)}
-        backdrop={backdrop}
-        backdropClassName={classNames(prefix(props, 'backdrop'), backdropClassName, inClassName)}
-        containerClassName={prefix(props, 'open')}
-        transition={animation ? Fade : undefined}
-        dialogTransitionTimeout={Modal.TRANSITION_DURATION}
-        backdropTransitionTimeout={Modal.BACKDROP_TRANSITION_DURATION}
       >
         <Dialog
           {...dialogProps}
@@ -270,6 +292,4 @@ Modal.Dialog = ModalDialog;
 Modal.TRANSITION_DURATION = 300;
 Modal.BACKDROP_TRANSITION_DURATION = 150;
 
-export default bsClass('modal',
-  bsSizes([Size.LARGE, Size.SMALL], Modal)
-);
+export default bsClass('modal', bsSizes([Size.LARGE, Size.SMALL], Modal));

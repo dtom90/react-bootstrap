@@ -1,8 +1,4 @@
-require('babel-register');
-
-const webpack = require('webpack');
-
-const webpackConfigBase = require('./webpack/base.config').default;
+const { DefinePlugin } = require('webpack');
 
 module.exports = config => {
   const { env } = process;
@@ -13,44 +9,59 @@ module.exports = config => {
     files: ['test/index.js'],
 
     preprocessors: {
-      'test/index.js': ['webpack', 'sourcemap'],
+      'test/index.js': ['webpack', 'sourcemap']
     },
 
-    // This explicitly doesn't use webpack-merge because we want to override
-    // the DefinePlugin in the base config.
-    webpack: Object.assign({}, webpackConfigBase, {
+    webpack: {
+      mode: 'development',
+      module: {
+        rules: [
+          {
+            test: /\.js$/,
+            exclude: /node_modules/,
+            use: {
+              loader: 'babel-loader',
+              options: {
+                cacheDirectory: true,
+                envName: 'test'
+              }
+            }
+          }
+        ]
+      },
       plugins: [
-        new webpack.DefinePlugin({
-          'process.env.NODE_ENV': JSON.stringify('test'),
-        }),
+        new DefinePlugin({
+          'process.env.NODE_ENV': JSON.stringify('test')
+        })
       ],
       devtool: 'cheap-module-inline-source-map',
-    }),
+      stats: 'minimal'
+    },
 
     webpackMiddleware: {
-      noInfo: true,
+      noInfo: true
     },
 
     reporters: ['mocha', 'coverage'],
 
     mochaReporter: {
-      output: 'autowatch',
+      output: 'autowatch'
     },
 
     coverageReporter: {
       type: 'lcov',
-      dir: 'coverage',
+      dir: 'coverage'
     },
 
     customLaunchers: {
       ChromeCi: {
         base: 'Chrome',
-        flags: ['--no-sandbox'],
-      },
+        flags: ['--no-sandbox']
+      }
     },
 
     browsers: env.BROWSER ? env.BROWSER.split(',') : ['Chrome'],
 
-    singleRun: env.CONTINUOUS_INTEGRATION === 'true',
+    singleRun: env.CONTINUOUS_INTEGRATION === 'true'
   });
 };

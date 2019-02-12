@@ -7,11 +7,11 @@ import { bsClass, getClassSet, splitBsProps } from './utils/bootstrapUtils';
 // TODO: `pullRight` doesn't belong here. There's no special handling here.
 
 const propTypes = {
-  pullRight: PropTypes.bool,
+  pullRight: PropTypes.bool
 };
 
 const defaultProps = {
-  pullRight: false,
+  pullRight: false
 };
 
 class Badge extends React.Component {
@@ -40,14 +40,11 @@ class Badge extends React.Component {
       'pull-right': pullRight,
 
       // Hack for collapsing on IE8.
-      hidden: !this.hasContent(children),
+      hidden: !this.hasContent(children)
     };
 
     return (
-      <span
-        {...elementProps}
-        className={classNames(className, classes)}
-      >
+      <span {...elementProps} className={classNames(className, classes)}>
         {children}
       </span>
     );

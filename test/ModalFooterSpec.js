@@ -6,17 +6,13 @@ import Modal from '../src/Modal';
 
 describe('Modal.Footer', () => {
   it('uses "div" by default', () => {
-    const instance = ReactTestUtils.renderIntoDocument(
-      <Modal.Footer />
-    );
+    const instance = ReactTestUtils.renderIntoDocument(<Modal.Footer />);
 
     assert.equal(ReactDOM.findDOMNode(instance).nodeName, 'DIV');
   });
 
   it('has "modal-footer" class', () => {
-    const instance = ReactTestUtils.renderIntoDocument(
-      <Modal.Footer />
-    );
+    const instance = ReactTestUtils.renderIntoDocument(<Modal.Footer />);
 
     assert.include(ReactDOM.findDOMNode(instance).className, 'modal-footer');
   });
@@ -45,6 +41,8 @@ describe('Modal.Footer', () => {
         <strong>Content</strong>
       </Modal.Footer>
     );
-    assert.ok(ReactTestUtils.findRenderedDOMComponentWithTag(instance, 'strong'));
+    assert.ok(
+      ReactTestUtils.findRenderedDOMComponentWithTag(instance, 'strong')
+    );
   });
 });

@@ -10,7 +10,9 @@ describe('<Glyphicon>', () => {
       <Glyphicon glyph="star" />
     );
     assert.ok(ReactDOM.findDOMNode(instance).className.match(/\bglyphicon\b/));
-    assert.ok(ReactDOM.findDOMNode(instance).className.match(/\bglyphicon-star\b/));
+    assert.ok(
+      ReactDOM.findDOMNode(instance).className.match(/\bglyphicon-star\b/)
+    );
   });
 
   it('renders without the .form-control-feedback class', () => {
@@ -18,6 +20,10 @@ describe('<Glyphicon>', () => {
       <Glyphicon glyph="star" />
     );
 
-    assert.notOk(ReactDOM.findDOMNode(instance).className.match(/\bform-control-feedback\b/));
+    assert.notOk(
+      ReactDOM.findDOMNode(instance).className.match(
+        /\bform-control-feedback\b/
+      )
+    );
   });
 });

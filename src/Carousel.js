@@ -6,8 +6,12 @@ import CarouselCaption from './CarouselCaption';
 import CarouselItem from './CarouselItem';
 import Glyphicon from './Glyphicon';
 import SafeAnchor from './SafeAnchor';
-import { bsClass, getClassSet, prefix, splitBsPropsAndOmit }
-  from './utils/bootstrapUtils';
+import {
+  bsClass,
+  getClassSet,
+  prefix,
+  splitBsPropsAndOmit
+} from './utils/bootstrapUtils';
 import ValidComponentChildren from './utils/ValidComponentChildren';
 
 // TODO: `slide` should be `animate`.
@@ -29,7 +33,7 @@ const propTypes = {
    * Callback fired when the active item changes.
    *
    * ```js
-   * (eventKey: any) => any | (eventKey: any, event: Object) => any
+   * (eventKey: any, ?event: Object) => any
    * ```
    *
    * If this callback takes two or more arguments, the second argument will
@@ -54,7 +58,7 @@ const propTypes = {
    * in the carousel.
    * Set to null to deactivate.
    */
-  nextLabel: PropTypes.string,
+  nextLabel: PropTypes.string
 };
 
 const defaultProps = {
@@ -67,7 +71,7 @@ const defaultProps = {
   prevIcon: <Glyphicon glyph="chevron-left" />,
   prevLabel: 'Previous',
   nextIcon: <Glyphicon glyph="chevron-right" />,
-  nextLabel: 'Next',
+  nextLabel: 'Next'
 };
 
 class Carousel extends React.Component {
@@ -85,10 +89,14 @@ class Carousel extends React.Component {
     this.state = {
       activeIndex: defaultActiveIndex != null ? defaultActiveIndex : 0,
       previousActiveIndex: null,
-      direction: null,
+      direction: null
     };
 
     this.isUnmounted = false;
+  }
+
+  componentDidMount() {
+    this.waitForNext();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -102,14 +110,17 @@ class Carousel extends React.Component {
 
       this.setState({
         previousActiveIndex: activeIndex,
-        direction: nextProps.direction != null ?
-          nextProps.direction :
-          this.getDirection(activeIndex, nextProps.activeIndex),
+        direction:
+          nextProps.direction != null
+            ? nextProps.direction
+            : this.getDirection(activeIndex, nextProps.activeIndex)
       });
     }
 
-    if (nextProps.activeIndex == null &&
-        this.state.activeIndex >= nextProps.children.length) {
+    if (
+      nextProps.activeIndex == null &&
+      this.state.activeIndex >= nextProps.children.length
+    ) {
       this.setState({
         activeIndex: 0,
         previousActiveIndex: null,
@@ -118,19 +129,38 @@ class Carousel extends React.Component {
     }
   }
 
-  componentDidMount() {
-    this.waitForNext();
-  }
-
   componentWillUnmount() {
     clearTimeout(this.timeout);
     this.isUnmounted = true;
   }
 
-  handleMouseOver() {
-    if (this.props.pauseOnHover) {
-      this.pause();
+  getActiveIndex() {
+    const activeIndexProp = this.props.activeIndex;
+    return activeIndexProp != null ? activeIndexProp : this.state.activeIndex;
+  }
+
+  getDirection(prevIndex, index) {
+    if (prevIndex === index) {
+      return null;
     }
+
+    return prevIndex > index ? 'prev' : 'next';
+  }
+
+  handleItemAnimateOutEnd() {
+    this.setState(
+      {
+        previousActiveIndex: null,
+        direction: null
+      },
+      () => {
+        this.waitForNext();
+
+        if (this.props.onSlideEnd) {
+          this.props.onSlideEnd();
+        }
+      }
+    );
   }
 
   handleMouseOut() {
@@ -139,17 +169,10 @@ class Carousel extends React.Component {
     }
   }
 
-  handlePrev(e) {
-    let index = this.getActiveIndex() - 1;
-
-    if (index < 0) {
-      if (!this.props.wrap) {
-        return;
-      }
-      index = ValidComponentChildren.count(this.props.children) - 1;
+  handleMouseOver() {
+    if (this.props.pauseOnHover) {
+      this.pause();
     }
-
-    this.select(index, e, 'prev');
   }
 
   handleNext(e) {
@@ -166,30 +189,29 @@ class Carousel extends React.Component {
     this.select(index, e, 'next');
   }
 
-  handleItemAnimateOutEnd() {
-    this.setState({
-      previousActiveIndex: null,
-      direction: null
-    }, () => {
-      this.waitForNext();
+  handlePrev(e) {
+    let index = this.getActiveIndex() - 1;
 
-      if (this.props.onSlideEnd) {
-        this.props.onSlideEnd();
+    if (index < 0) {
+      if (!this.props.wrap) {
+        return;
       }
-    });
-  }
-
-  getActiveIndex() {
-    const activeIndexProp = this.props.activeIndex;
-    return activeIndexProp != null ? activeIndexProp : this.state.activeIndex;
-  }
-
-  getDirection(prevIndex, index) {
-    if (prevIndex === index) {
-      return null;
+      index = ValidComponentChildren.count(this.props.children) - 1;
     }
 
-    return prevIndex > index ? 'prev' : 'next';
+    this.select(index, e, 'prev');
+  }
+
+  // This might be a public API.
+  pause() {
+    this.isPaused = true;
+    clearTimeout(this.timeout);
+  }
+
+  // This might be a public API.
+  play() {
+    this.isPaused = false;
+    this.waitForNext();
   }
 
   select(index, e, direction) {
@@ -249,45 +271,17 @@ class Carousel extends React.Component {
     }
   }
 
-  // This might be a public API.
-  pause() {
-    this.isPaused = true;
-    clearTimeout(this.timeout);
-  }
-
-  // This might be a public API.
-  play() {
-    this.isPaused = false;
-    this.waitForNext();
-  }
-
-  renderIndicators(children, activeIndex, bsProps) {
-    let indicators = [];
-
-    ValidComponentChildren.forEach(children, (child, index) => {
-      indicators.push(
-        <li
-          key={index}
-          className={index === activeIndex ? 'active' : null}
-          onClick={e => this.select(index, e)}
-        />,
-
-        // Force whitespace between indicator elements. Bootstrap requires
-        // this for correct spacing of elements.
-        ' '
-      );
-    });
-
-    return (
-      <ol className={prefix(bsProps, 'indicators')}>
-        {indicators}
-      </ol>
-    );
-  }
-
   renderControls(properties) {
-    const { wrap, children, activeIndex, prevIcon,
-            nextIcon, bsProps, prevLabel, nextLabel } = properties;
+    const {
+      wrap,
+      children,
+      activeIndex,
+      prevIcon,
+      nextIcon,
+      bsProps,
+      prevLabel,
+      nextLabel
+    } = properties;
     const controlClassName = prefix(bsProps, 'control');
     const count = ValidComponentChildren.count(children);
 
@@ -312,8 +306,28 @@ class Carousel extends React.Component {
           {nextIcon}
           {nextLabel && <span className="sr-only">{nextLabel}</span>}
         </SafeAnchor>
-      ),
+      )
     ];
+  }
+
+  renderIndicators(children, activeIndex, bsProps) {
+    let indicators = [];
+
+    ValidComponentChildren.forEach(children, (child, index) => {
+      indicators.push(
+        <li
+          key={index}
+          className={index === activeIndex ? 'active' : null}
+          onClick={e => this.select(index, e)}
+        />,
+
+        // Force whitespace between indicator elements. Bootstrap requires
+        // this for correct spacing of elements.
+        ' '
+      );
+    });
+
+    return <ol className={prefix(bsProps, 'indicators')}>{indicators}</ol>;
   }
 
   render() {
@@ -347,7 +361,7 @@ class Carousel extends React.Component {
 
     const classes = {
       ...getClassSet(bsProps),
-      slide,
+      slide
     };
 
     return (
@@ -370,22 +384,24 @@ class Carousel extends React.Component {
               animateOut: previousActive,
               animateIn: active && previousActiveIndex != null && slide,
               direction,
-              onAnimateOutEnd: previousActive ?
-                this.handleItemAnimateOutEnd : null,
+              onAnimateOutEnd: previousActive
+                ? this.handleItemAnimateOutEnd
+                : null
             });
           })}
         </div>
 
-        {controls && this.renderControls({
-          wrap,
-          children,
-          activeIndex,
-          prevIcon,
-          prevLabel,
-          nextIcon,
-          nextLabel,
-          bsProps,
-        })}
+        {controls &&
+          this.renderControls({
+            wrap,
+            children,
+            activeIndex,
+            prevIcon,
+            prevLabel,
+            nextIcon,
+            nextLabel,
+            bsProps
+          })}
       </div>
     );
   }

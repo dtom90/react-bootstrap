@@ -41,11 +41,11 @@ const propTypes = {
    *
    * adds class `visible-lg-block`
    */
-  visibleLgBlock: PropTypes.bool,
+  visibleLgBlock: PropTypes.bool
 };
 
 const defaultProps = {
-  componentClass: 'div',
+  componentClass: 'div'
 };
 
 class Clearfix extends React.Component {
@@ -65,10 +65,7 @@ class Clearfix extends React.Component {
     });
 
     return (
-      <Component
-        {...elementProps}
-        className={classNames(className, classes)}
-      />
+      <Component {...elementProps} className={classNames(className, classes)} />
     );
   }
 }

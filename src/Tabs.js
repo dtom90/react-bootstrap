@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import requiredForA11y from 'prop-types-extra/lib/isRequiredForA11y';
 import uncontrollable from 'uncontrollable';
+import elementType from 'prop-types-extra/lib/elementType';
 
 import Nav from './Nav';
 import NavItem from './NavItem';
@@ -25,19 +26,24 @@ const propTypes = {
    */
   bsStyle: PropTypes.oneOf(['tabs', 'pills']),
 
-  animation: PropTypes.bool,
+  /**
+   * Sets a default animation strategy. Use `false` to disable, `true`
+   * to enable the default `<Fade>` animation, or a react-transition-group
+   * v2 `<Transition/>` component.
+   */
+  animation: PropTypes.oneOfType([PropTypes.bool, elementType]),
 
-  id: requiredForA11y(PropTypes.oneOfType([
-    PropTypes.string, PropTypes.number,
-  ])),
+  id: requiredForA11y(
+    PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  ),
 
   /**
    * Callback fired when a Tab is selected.
    *
    * ```js
    * function (
-   * 	Any eventKey,
-   * 	SyntheticEvent event?
+   *   Any eventKey,
+   *   SyntheticEvent event?
    * )
    * ```
    *
@@ -53,14 +59,14 @@ const propTypes = {
   /**
    * Unmount tabs (remove it from the DOM) when it is no longer visible
    */
-  unmountOnExit: PropTypes.bool,
+  unmountOnExit: PropTypes.bool
 };
 
 const defaultProps = {
   bsStyle: 'tabs',
   animation: true,
   mountOnEnter: false,
-  unmountOnExit: false,
+  unmountOnExit: false
 };
 
 function getDefaultActiveKey(children) {
@@ -82,11 +88,7 @@ class Tabs extends React.Component {
     }
 
     return (
-      <NavItem
-        eventKey={eventKey}
-        disabled={disabled}
-        className={tabClassName}
-      >
+      <NavItem eventKey={eventKey} disabled={disabled} className={tabClassName}>
         {title}
       </NavItem>
     );
@@ -116,10 +118,7 @@ class Tabs extends React.Component {
         style={style}
       >
         <div>
-          <Nav
-            {...props}
-            role="tablist"
-          >
+          <Nav {...props} role="tablist">
             {ValidComponentChildren.map(children, this.renderTab)}
           </Nav>
 

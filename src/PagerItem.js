@@ -11,13 +11,13 @@ const propTypes = {
   next: PropTypes.bool,
   onClick: PropTypes.func,
   onSelect: PropTypes.func,
-  eventKey: PropTypes.any,
+  eventKey: PropTypes.any
 };
 
 const defaultProps = {
   disabled: false,
   previous: false,
-  next: false,
+  next: false
 };
 
 class PagerItem extends React.Component {
@@ -30,11 +30,8 @@ class PagerItem extends React.Component {
   handleSelect(e) {
     const { disabled, onSelect, eventKey } = this.props;
 
-    if (onSelect || disabled) {
-      e.preventDefault();
-    }
-
     if (disabled) {
+      e.preventDefault();
       return;
     }
 
@@ -44,8 +41,15 @@ class PagerItem extends React.Component {
   }
 
   render() {
-    const { disabled, previous, next, onClick, className, style, ...props } =
-      this.props;
+    const {
+      disabled,
+      previous,
+      next,
+      onClick,
+      className,
+      style,
+      ...props
+    } = this.props;
 
     delete props.onSelect;
     delete props.eventKey;

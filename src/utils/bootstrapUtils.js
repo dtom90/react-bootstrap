@@ -16,11 +16,9 @@ function curry(fn) {
 }
 
 export function prefix(props, variant) {
-  invariant(
-    props.bsClass != null,
-    'A `bsClass` prop is required for this component'
-  );
-  return props.bsClass + (variant ? `-${variant}` : '');
+  let bsClass = (props.bsClass || '').trim();
+  invariant(bsClass != null, 'A `bsClass` prop is required for this component');
+  return bsClass + (variant ? `-${variant}` : '');
 }
 
 export const bsClass = curry((defaultClass, Component) => {
@@ -51,7 +49,8 @@ export const bsStyles = curry((styles, defaultStyle, Component) => {
   let propType = PropTypes.oneOf(existing);
 
   // expose the values on the propType function for documentation
-  Component.STYLES = propType._values = existing;
+  Component.STYLES = existing;
+  propType._values = existing;
 
   Component.propTypes = {
     ...propTypes,
@@ -114,7 +113,7 @@ export const bsSizes = curry((sizes, defaultSize, Component) => {
 
 export function getClassSet(props) {
   const classes = {
-    [prefix(props)]: true,
+    [prefix(props)]: true
   };
 
   if (props.bsSize) {
@@ -134,7 +133,7 @@ function getBsProps(props) {
     bsClass: props.bsClass,
     bsSize: props.bsSize,
     bsStyle: props.bsStyle,
-    bsRole: props.bsRole,
+    bsRole: props.bsRole
   };
 }
 
@@ -160,7 +159,9 @@ export function splitBsProps(props) {
 
 export function splitBsPropsAndOmit(props, omittedPropNames) {
   const isOmittedProp = {};
-  omittedPropNames.forEach(propName => { isOmittedProp[propName] = true; });
+  omittedPropNames.forEach(propName => {
+    isOmittedProp[propName] = true;
+  });
 
   const elementProps = {};
   Object.entries(props).forEach(([propName, propValue]) => {

@@ -1,10 +1,16 @@
+/* eslint-disable jsx-a11y/label-has-for */
+
 import classNames from 'classnames';
 import React from 'react';
 import PropTypes from 'prop-types';
 import warning from 'warning';
 
-import { bsClass, getClassSet, prefix, splitBsProps }
-  from './utils/bootstrapUtils';
+import {
+  bsClass,
+  getClassSet,
+  prefix,
+  splitBsProps
+} from './utils/bootstrapUtils';
 
 const propTypes = {
   inline: PropTypes.bool,
@@ -13,9 +19,7 @@ const propTypes = {
   /**
    * Only valid if `inline` is not set.
    */
-  validationState: PropTypes.oneOf([
-    'success', 'warning', 'error', null,
-  ]),
+  validationState: PropTypes.oneOf(['success', 'warning', 'error', null]),
   /**
    * Attaches a ref to the `<input>` element. Only functions can be used here.
    *
@@ -23,7 +27,7 @@ const propTypes = {
    * <Radio inputRef={ref => { this.input = ref; }} />
    * ```
    */
-  inputRef: PropTypes.func,
+  inputRef: PropTypes.func
 };
 
 const defaultProps = {
@@ -60,7 +64,7 @@ class Radio extends React.Component {
     if (inline) {
       const classes = {
         [prefix(bsProps, 'inline')]: true,
-        disabled,
+        disabled
       };
 
       // Use a warning here instead of in propTypes to get better-looking
@@ -68,12 +72,16 @@ class Radio extends React.Component {
       warning(
         !validationState,
         '`validationState` is ignored on `<Radio inline>`. To display ' +
-        'validation state on an inline radio, set `validationState` on a ' +
-        'parent `<FormGroup>` or other element instead.'
+          'validation state on an inline radio, set `validationState` on a ' +
+          'parent `<FormGroup>` or other element instead.'
       );
 
       return (
-        <label className={classNames(className, classes)} style={style} title={title}>
+        <label
+          className={classNames(className, classes)}
+          style={style}
+          title={title}
+        >
           {input}
           {children}
         </label>
@@ -82,7 +90,7 @@ class Radio extends React.Component {
 
     const classes = {
       ...getClassSet(bsProps),
-      disabled,
+      disabled
     };
     if (validationState) {
       classes[`has-${validationState}`] = true;

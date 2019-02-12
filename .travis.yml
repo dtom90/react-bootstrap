@@ -2,7 +2,7 @@ sudo: false
 
 language: node_js
 node_js:
-  - stable
+  - '9'
 
 env:
   - BROWSER=ChromeCi
@@ -10,12 +10,17 @@ env:
 
 cache:
   directories:
+    - ~/.yarn-cache
     - node_modules
+    - www/node_modules
 
 before_install:
   - export CHROME_BIN=chromium-browser
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
+
+install:
+  - yarn bootstrap
 
 after_success:
   - node_modules/.bin/codecov

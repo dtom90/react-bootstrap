@@ -1,16 +1,20 @@
 import React from 'react';
 import ReactTestUtils from 'react-dom/test-utils';
 
+import { mount } from 'enzyme';
+
 import Panel from '../src/Panel';
 import PanelGroup from '../src/PanelGroup';
 
-import { getOne } from './helpers';
+import { shouldWarn } from './helpers';
 
 describe('<PanelGroup>', () => {
   it('Should pass bsStyle to Panels', () => {
     let instance = ReactTestUtils.renderIntoDocument(
-      <PanelGroup bsStyle="default">
-        <Panel>Panel 1</Panel>
+      <PanelGroup bsStyle="default" id="panel">
+        <Panel>
+          <Panel.Body>Panel 1</Panel.Body>
+        </Panel>
       </PanelGroup>
     );
 
@@ -21,8 +25,10 @@ describe('<PanelGroup>', () => {
 
   it('Should not override bsStyle on Panel', () => {
     let instance = ReactTestUtils.renderIntoDocument(
-      <PanelGroup bsStyle="default">
-        <Panel bsStyle="primary">Panel 1</Panel>
+      <PanelGroup bsStyle="default" id="panel">
+        <Panel bsStyle="primary">
+          <Panel.Body>Panel 1</Panel.Body>
+        </Panel>
       </PanelGroup>
     );
 
@@ -31,80 +37,124 @@ describe('<PanelGroup>', () => {
     assert.equal(panel.props.bsStyle, 'primary');
   });
 
-  it('Should not collapse panel by bubbling onSelect callback', () => {
-    let instance = ReactTestUtils.renderIntoDocument(
-      <PanelGroup accordion>
-        <Panel>
-          <input type="text" className="changeme" />
-        </Panel>
-      </PanelGroup>
-    );
+  describe('accordion', () => {
+    it('Should not collapse panel by bubbling onSelect callback', () => {
+      mount(
+        <PanelGroup
+          accordion
+          id="panel"
+          onSelect={() => {
+            throw new Error();
+          }}
+        >
+          <Panel>
+            <input type="text" className="changeme" />
+          </Panel>
+        </PanelGroup>
+      )
+        .assertSingle('input.changeme')
+        .simulate('select');
+    });
 
-    let panel = ReactTestUtils.findRenderedComponentWithType(instance, Panel);
-
-    assert.notOk(panel.state.collapsing);
-
-    ReactTestUtils.Simulate.select(
-      ReactTestUtils.findRenderedDOMComponentWithClass(panel, 'changeme')
-    );
-
-    assert.notOk(panel.state.collapsing);
-  });
-
-  it('Should obey onSelect handler', () => {
-    function handleSelect(eventKey, e) {
-      if (e.target.className.indexOf('ignoreme') > -1) {
-        e.selected = false;
+    it('Should call onSelect handler with eventKey', done => {
+      function handleSelect(eventKey, e) {
+        e.should.exist;
+        eventKey.should.equal('1');
+        done();
       }
-    }
 
-    let header = (
-      <div>
-        <span className="clickme">Click me</span>
-        <span className="ignoreme">Ignore me</span>
-      </div>
-    );
+      mount(
+        <PanelGroup accordion onSelect={handleSelect} id="panel">
+          <Panel eventKey="1">
+            <Panel.Heading>
+              <Panel.Title toggle>foo</Panel.Title>
+            </Panel.Heading>
 
-    let instance = ReactTestUtils.renderIntoDocument(
-      <PanelGroup accordion onSelect={handleSelect}>
-        <Panel eventKey="1" header={header}>
-          <div>Panel body</div>
-        </Panel>
-      </PanelGroup>
-    );
+            <Panel.Body collapsible>Panel 1</Panel.Body>
+          </Panel>
+        </PanelGroup>
+      )
+        .find('a')
+        .simulate('click');
+    });
 
-    let panel = ReactTestUtils.findRenderedComponentWithType(instance, Panel);
+    it('Should manage expanded panels', () => {
+      const inst = mount(
+        <PanelGroup accordion defaultActiveKey="1" id="panel">
+          <Panel id="panel1" eventKey="1">
+            <Panel.Heading>
+              <Panel.Title toggle>foo</Panel.Title>
+            </Panel.Heading>
 
-    assert.notOk(panel.state.expanded);
+            <Panel.Body collapsible>Panel 1</Panel.Body>
+          </Panel>
+          <Panel id="panel2" eventKey="2">
+            <Panel.Heading>
+              <Panel.Title toggle>foo</Panel.Title>
+            </Panel.Heading>
 
-    ReactTestUtils.Simulate.click(
-      ReactTestUtils.findRenderedDOMComponentWithClass(panel, 'ignoreme')
-    );
+            <Panel.Body collapsible>Panel 2</Panel.Body>
+          </Panel>
+        </PanelGroup>
+      );
 
-    assert.notOk(panel.state.expanded);
+      const panel1 = inst.find('#panel1').find('a');
+      const panel2 = inst.find('#panel2').find('a');
+      const panel1Dom = panel1.getDOMNode();
+      const panel2Dom = panel2.getDOMNode();
 
-    ReactTestUtils.Simulate.click(
-      ReactTestUtils.findRenderedDOMComponentWithClass(panel, 'clickme')
-    );
+      panel2.simulate('click');
+      assert.equal(panel1Dom.getAttribute('class'), 'collapsed');
+      assert.equal(panel2Dom.getAttribute('class'), '');
 
-    assert.ok(panel.state.expanded);
+      panel1.simulate('click');
+      assert.equal(panel1Dom.getAttribute('class'), '');
+      assert.equal(panel2Dom.getAttribute('class'), 'collapsed');
+
+      panel1.simulate('click');
+      assert.equal(panel1Dom.getAttribute('class'), 'collapsed');
+      assert.equal(panel2Dom.getAttribute('class'), 'collapsed');
+    });
+
+    it('Should warn if panel has explicit expanded', () => {
+      shouldWarn('`<Panel>` `expanded`');
+
+      mount(
+        <PanelGroup accordion defaultActiveKey="1" id="panel">
+          <Panel id="panel1" eventKey="1" />
+          <Panel id="panel2" eventKey="2" expanded onToggle={() => {}} />
+        </PanelGroup>
+      );
+    });
   });
 
   describe('Web Accessibility', () => {
-    let instance, panelBodies, panelGroup, links;
+    let panelBodies, panelGroup, headers, links; // eslint-disable-line
 
     beforeEach(() => {
-      instance = ReactTestUtils.renderIntoDocument(
-        <PanelGroup defaultActiveKey="1" accordion>
-          <Panel header="Collapsible Group Item #1" eventKey="1" id="Panel1ID">Panel 1</Panel>
-          <Panel header="Collapsible Group Item #2" eventKey="2" id="Panel2ID">Panel 2</Panel>
+      const inst = mount(
+        <PanelGroup accordion defaultActiveKey="1" id="panel">
+          <Panel eventKey="1">
+            <Panel.Heading>
+              <Panel.Title toggle>foo</Panel.Title>
+            </Panel.Heading>
+
+            <Panel.Body collapsible>Panel 1</Panel.Body>
+          </Panel>
+          <Panel eventKey="2">
+            <Panel.Heading>
+              <Panel.Title toggle>foo</Panel.Title>
+            </Panel.Heading>
+
+            <Panel.Body collapsible>Panel 2</Panel.Body>
+          </Panel>
         </PanelGroup>
       );
-      let accordion = ReactTestUtils.findRenderedComponentWithType(instance, PanelGroup);
-      panelGroup = ReactTestUtils.findRenderedDOMComponentWithClass(accordion, 'panel-group');
-      panelBodies = panelGroup.getElementsByClassName('panel-collapse');
-      links = Array.from(panelGroup.getElementsByClassName('panel-heading'))
-        .map(header => getOne(header.getElementsByTagName('a')));
+
+      panelGroup = inst.getDOMNode();
+      panelBodies = inst.find('.panel-collapse').map(n => n.getDOMNode());
+      headers = inst.find('.panel-heading').map(n => n.getDOMNode());
+      links = inst.find('.panel-heading a').map(n => n.getDOMNode());
     });
 
     it('Should have a role of tablist', () => {
@@ -112,8 +162,8 @@ describe('<PanelGroup>', () => {
     });
 
     it('Should provide each header tab with role of tab', () => {
-      assert.equal(links[0].getAttribute('role'), 'tab');
-      assert.equal(links[1].getAttribute('role'), 'tab');
+      assert.equal(headers[0].getAttribute('role'), 'tab');
+      assert.equal(headers[1].getAttribute('role'), 'tab');
     });
 
     it('Should provide the panelBodies with role of tabpanel', () => {
@@ -125,14 +175,12 @@ describe('<PanelGroup>', () => {
       assert.equal(panelBodies[1].id, links[1].getAttribute('aria-controls'));
     });
 
-    it('Should maintain each tab aria-selected state', () => {
-      assert.equal(links[0].getAttribute('aria-selected'), 'true');
-      assert.equal(links[1].getAttribute('aria-selected'), 'false');
-    });
+    it('Should maintain each tab aria-expanded state', () => {
+      assert.equal(links[0].getAttribute('aria-expanded'), 'true');
+      assert.equal(panelBodies[0].getAttribute('aria-expanded'), 'true');
 
-    it('Should maintain each tab aria-hidden state', () => {
-      assert.equal(panelBodies[0].getAttribute('aria-hidden'), 'false');
-      assert.equal(panelBodies[1].getAttribute('aria-hidden'), 'true');
+      assert.equal(links[1].getAttribute('aria-expanded'), 'false');
+      assert.equal(panelBodies[1].getAttribute('aria-expanded'), 'false');
     });
   });
 });

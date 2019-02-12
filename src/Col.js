@@ -168,11 +168,11 @@ const propTypes = {
    *
    * class-prefix `col-lg-pull-`
    */
-  lgPull: PropTypes.number,
+  lgPull: PropTypes.number
 };
 
 const defaultProps = {
-  componentClass: 'div',
+  componentClass: 'div'
 };
 
 class Col extends React.Component {
@@ -207,10 +207,7 @@ class Col extends React.Component {
     });
 
     return (
-      <Component
-        {...elementProps}
-        className={classNames(className, classes)}
-      />
+      <Component {...elementProps} className={classNames(className, classes)} />
     );
   }
 }
